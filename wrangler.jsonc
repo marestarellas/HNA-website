@@ -1,0 +1,62 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "attuning-to-nature",
+	"main": ".open-next/worker.js",
+	"compatibility_date": "2025-12-01",
+	"compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+
+	"assets": {
+		"directory": ".open-next/assets",
+		"binding": "ASSETS"
+	},
+
+	// Self-reference for OpenNext caching. Service name must match `name` above.
+	"services": [
+		{
+			"binding": "WORKER_SELF_REFERENCE",
+			"service": "attuning-to-nature"
+		}
+	],
+
+	// D1 — website data (stories, questionnaire, experiment).
+	// First run: `npx wrangler d1 create attuning-to-nature`, then paste the
+	// returned `database_id` below.
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "attuning-to-nature",
+			"database_id": "REPLACE_WITH_D1_DATABASE_ID",
+			"migrations_dir": "db/migrations"
+		}
+	],
+
+	// R2 — incremental cache (required by OpenNext) + project buckets.
+	// First run, for each: `npx wrangler r2 bucket create <bucket_name>`
+	"r2_buckets": [
+		{
+			"binding": "NEXT_INC_CACHE_R2_BUCKET",
+			"bucket_name": "attuning-to-nature-opennext-cache"
+		},
+		{
+			"binding": "AUDIO_BUCKET",
+			"bucket_name": "attuning-to-nature-audio"
+		},
+		{
+			"binding": "STIMULI_BUCKET",
+			"bucket_name": "attuning-to-nature-stimuli"
+		},
+		{
+			"binding": "RENDERS_BUCKET",
+			"bucket_name": "attuning-to-nature-renders"
+		}
+	],
+
+	// Built-in Cloudflare image optimization.
+	"images": {
+		"binding": "IMAGES"
+	},
+
+	"observability": {
+		"enabled": true
+	}
+}
