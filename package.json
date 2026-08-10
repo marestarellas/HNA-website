@@ -10,17 +10,22 @@
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
-    "db:migrate:local": "wrangler d1 migrations apply attuning-to-nature --local",
-    "db:migrate:remote": "wrangler d1 migrations apply attuning-to-nature --remote",
+    "db:migrate:local": "wrangler d1 migrations apply attuning_to_nature --local",
+    "db:migrate:remote": "wrangler d1 migrations apply attuning_to_nature --remote",
+    "db:console:local": "wrangler d1 execute attuning_to_nature --local --command",
+    "db:console:remote": "wrangler d1 execute attuning_to_nature --remote --command",
     "remotion:studio": "remotion studio remotion/src/index.ts",
     "remotion:render": "remotion render remotion/src/index.ts"
   },
   "dependencies": {
     "@remotion/cli": "^4.0.455",
+    "hono": "^4.13.0",
+    "maplibre-gl": "^5.24.0",
     "motion": "^12.38.0",
     "next": "16.2.4",
     "react": "19.2.4",
     "react-dom": "19.2.4",
+    "react-map-gl": "^8.1.2",
     "remotion": "^4.0.455"
   },
   "devDependencies": {

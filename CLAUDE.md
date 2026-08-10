@@ -90,11 +90,19 @@ Bootstrap deviated from the original monorepo proposal — see §3.1 for the rat
 ├── tsconfig.json / postcss.config.mjs / eslint.config.mjs / .gitignore
 ├── docs/                      # to be created — grant PDF + design refs + strategies
 ├── src/
-│   └── app/                   # Next.js App Router
-│       ├── layout.tsx
-│       ├── page.tsx           # bootstrap placeholder landing
-│       └── globals.css        # Tailwind 4 + design-token scaffold
-│       (sections to be added: science/, learn/, stories/, experiment/, api/)
+│   ├── app/                   # Next.js App Router
+│   │   ├── layout.tsx
+│   │   ├── globals.css        # Tailwind 4 + design-token scaffold
+│   │   ├── (site)/            # public site — wrapped in SiteHeader/SiteFooter
+│   │   │   ├── page.tsx       # bootstrap placeholder landing
+│   │   │   ├── stories/       # Section 3 — the atlas (live)
+│   │   │   └── learn|science|experiment/    # still stubs
+│   │   ├── design/            # design-direction explorations, own chrome
+│   │   └── api/[[...route]]/  # catch-all: mounts the Hono app (see §3.1)
+│   ├── server/
+│   │   └── app.ts             # Hono app — every /api route + the ML pipeline
+│   └── components/
+│       └── stories/           # ContributionMap (the atlas) + its client wrapper
 ├── public/                    # static assets served at /
 ├── remotion/
 │   ├── README.md
@@ -105,15 +113,17 @@ Bootstrap deviated from the original monorepo proposal — see §3.1 for the rat
 │       └── concepts/          # to be added — one file per educational concept
 └── db/
     ├── README.md
-    └── migrations/
-        └── 0001_init.sql      # initial schema, applied via Wrangler
+    └── migrations/            # 0001–0013 come from the map prototype and are
+        └── ...                # already applied to the live D1; 0014 onward
+                               # originate here. Never renumber 0001–0013.
 ```
 
 ### 3.1 Deviations from the original proposal
 
 - **Flat layout, not a monorepo.** Single Next.js app at the repo root with `remotion/` / `db/` / `docs/` as siblings. We have one app, not a fleet — the ceremony of `apps/web/` adds nothing here.
 - **Cloudflare Workers (via OpenNext), not Pages.** Next.js 16's recommended Cloudflare path is the OpenNext adapter (`@opennextjs/cloudflare`) deploying to Workers. The older `@cloudflare/next-on-pages` is edge-runtime only and lags behind Next releases. OpenNext gives full Next.js compatibility (App Router, server components, server actions) on Workers, with the same D1/R2/KV bindings.
-- **No separate `workers/` folder.** API endpoints live in Next.js App Router route handlers under `src/app/api/`. The Cloudflare Worker is the OpenNext-built worker that serves the whole app; bindings are declared in `wrangler.jsonc`.
+- **No separate `workers/` folder.** API endpoints live under `src/app/api/`. The Cloudflare Worker is the OpenNext-built worker that serves the whole app; bindings are declared in `wrangler.jsonc`.
+- **One Hono app rather than a tree of route handlers.** `src/app/api/[[...route]]/route.ts` is a catch-all that hands every `/api` request to a single Hono app in `src/server/app.ts`. This was adopted when the map prototype merged in (§9, 2026-08-05): its API and embedding/clustering pipeline were already written as a Hono worker, and mounting them wholesale preserved the tested code exactly instead of re-deriving a dozen route handlers from it. The catch-all must pass `ctx` through — `POST /api/stories` relies on `ctx.waitUntil()` to embed and cluster a submission after responding. Add new endpoints in `src/server/app.ts`, not as sibling route folders.
 - **No `apps/` or `scripts/` folder.** Added only when there's a real second app or script to host.
 - **Cloudflare provisioning (D1 / R2 / Workers project)** is left as a manual one-time step the human has to run — see [README.md](README.md). We do not automate `wrangler login` or resource creation.
 
@@ -302,6 +312,8 @@ The agent should keep this list current and surface answers in PRs. Answered ite
 - Analytics: none, Plausible, or self-hosted?
 
 **Resolved**
+- *Story kinds.* Three, not two: **personal | myth | pareidolia**. §4's original `personal | folklore` split was superseded by what the prototype actually built and tested — the contribution flow branches on kind from the first question, the phenomenological questions adapt per branch, and clustering runs both globally and within each kind. "Pareidolia" (seeing faces or figures in rock, bark, cloud) earns its own branch because it carries a photograph, which the other two do not.
+- *Wheel-of-choice.* Not built as a wheel. The prototype's flow asks for connection type and subject as a per-kind step sequence, with a body-map step (up to three marks on a silhouette, each with a sensation) on the personal branch. This is the shipped design; revisit only with a reason.
 - *Site identity.* "Attuning to Nature" is the public title. No funder visibility.
 - *Languages at launch.* English only.
 - *Domain.* `attuningtonature.earth` is registered. Cloudflare zone setup TBD by the human at deploy time.
@@ -329,4 +341,5 @@ The agent should keep this list current and surface answers in PRs. Answered ite
 
 > Every merged section adds a dated note here. Format: `YYYY-MM-DD — section — what changed — why`.
 
+- 2026-08-05 — section 3 (stories) — Merged the standalone map prototype in as `/stories`. The prototype was a Vite SPA plus a separate Hono Worker; both now live here. **Backend:** the Worker became `src/server/app.ts`, mounted whole at `src/app/api/[[...route]]/route.ts` (§3.1); its CORS middleware was dropped as the API is same-origin now. **Schema:** the prototype's 13 migrations were copied in *unrenumbered* — they are already recorded as applied against the live D1 — and this repo's never-applied `0001_init.sql` was renumbered to `0014`, keeping only the questionnaire/experiment/stimuli tables. Its `stories` and `story_categories` definitions were dropped in favour of the prototype's live schema. **Bindings:** `wrangler.jsonc` gained `ai`, `vectorize`, the `RL_STORIES` rate limiter and `CONSENT_VERSION`, and now points at the real database (`attuning_to_nature`, underscores — the hyphenated one never existed). `AUDIO_BUCKET` was replaced by the prototype's `MEDIA`, which holds both audio and images. **Frontend:** the 3k-line map component came across near-verbatim behind a `dynamic(ssr:false)` wrapper; only the two `import.meta.env` reads changed, plus a cleanup added to its palette effect so its `--atn-*` custom properties no longer survive a client-side navigation onto other routes. — *Why:* mounting the Hono app rather than re-deriving route handlers, and pinning `maplibre-gl` to the v5 the prototype was built against rather than taking npm's v6, both follow the same rule — a port should change behaviour in as few places as possible, so that anything that breaks is traceable to the move and not to a simultaneous rewrite. The map keeps its own palette and page chrome for now; reconciling it with the site design system waits on a chosen direction. Lint findings in the two ported files are downgraded to warnings in `eslint.config.mjs`, with the debt itemized there. **Two fixes the live environment forced, neither caused by the merge:** `account_id` is now pinned in `wrangler.jsonc`, because this token can see two Cloudflare accounts and `next dev` runs wrangler non-interactively — without it the remote proxy for the AI/Vectorize bindings cannot start, and that failure takes down every route, not just the AI ones; and cluster naming moved from `@cf/meta/llama-3.1-8b-instruct` to the `-fp8` build of the same model, the original having been deprecated by Cloudflare on 2026-05-30, one day after the naming prompt was written.
 - 2026-05-01 — bootstrap — Scaffolded Next.js 16 (App Router, TypeScript, Tailwind 4) at repo root; added Remotion (`remotion/`) with a hello-world composition; added D1 schema and first migration (`db/migrations/0001_init.sql`); wired the OpenNext Cloudflare adapter (`@opennextjs/cloudflare`), `wrangler.jsonc` with bindings for D1 + four R2 buckets, and dev/preview/deploy scripts. Replaced the Vercel boilerplate landing with a minimal placeholder. — *Why:* a single coherent surface to iterate on; modern Cloudflare Workers path supports Next 16 features the older Pages adapter does not; flat layout (rather than a monorepo) keeps navigation cheap for a single-app project.

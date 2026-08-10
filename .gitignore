@@ -32,6 +32,9 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+# ...but the template must be committed — it is the only place the required
+# variables are documented for someone cloning this repo.
+!.env.example
 
 # vercel
 .vercel

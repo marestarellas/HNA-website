@@ -16,11 +16,41 @@ The full project brief and operating manual is in [CLAUDE.md](CLAUDE.md). Read t
 
 ```bash
 npm install
+cp .env.example .env.local     # then paste in a MapTiler key — see below
+npm run db:migrate:local       # creates the local DB and seeds ~115 stories
 npm run dev
 # → http://localhost:3000
 ```
 
-That's it for the website itself. D1 and R2 bindings work locally only after the one-time Cloudflare setup below — until then, anything that reads from D1 or R2 will fail (the rest of the app is fine).
+`npm run db:migrate:local` builds a throwaway local database under
+`.wrangler/state/` via Miniflare. It needs no Cloudflare account and never
+touches production. See [db/README.md](db/README.md) for detail.
+
+### Two things that will bite you
+
+**You must be a member of the project's Cloudflare account, or `npm run dev`
+will not start at all.** `wrangler.jsonc` declares `ai` and `vectorize`
+bindings. Neither can be emulated locally, so OpenNext opens a remote proxy for
+them at boot — and if that proxy fails to authenticate, it takes down
+`getCloudflareContext()` for *every* route, not just the ones using AI. You get
+500s across the whole site, which does not look like an auth problem.
+
+So, once: `npx wrangler login`, and ask to be added to the Cloudflare account
+that owns the `account_id` in `wrangler.jsonc`.
+
+If you are not on the account yet and just want to work on the front end,
+temporarily comment out the `ai` and `vectorize` blocks in `wrangler.jsonc`.
+Everything except embedding, transcription and cluster naming works without
+them — including all of D1, so the map and its 115 pins render fine. Don't
+commit that change.
+
+**The map needs a MapTiler key.** Without `NEXT_PUBLIC_MAPTILER_KEY` in
+`.env.local`, `/stories` still loads every pin from D1 but the basemap 403s and
+you get pins on a blank canvas. A free key from
+[MapTiler](https://cloud.maptiler.com/account/keys/) is enough.
+
+Note that the `AI` binding always calls the real Cloudflare API, so it bills
+usage even in local dev.
 
 ```bash
 # Remotion studio (compose / preview animations)
@@ -30,37 +60,37 @@ npm run remotion:studio
 npm run remotion:render -- HelloWorld out/HelloWorld.mp4
 ```
 
-## One-time Cloudflare setup (you, not the agent)
+## Cloudflare resources
 
-The agent did **not** create your Cloudflare account, the Workers project, the D1 database, or the R2 buckets. Those need your login. Do this once:
+The D1 database **already exists** — `attuning_to_nature`, with underscores,
+its `database_id` already in `wrangler.jsonc`. Do not run `wrangler d1 create`:
+older notes mention a hyphenated `attuning-to-nature` that was never
+provisioned, and creating it just gives you a second empty database.
+
+Still to be provisioned by a human with account access, if they don't exist yet:
 
 ```bash
-# 1. Authenticate Wrangler with your Cloudflare account
-npx wrangler login
+npx wrangler r2 bucket create attuning-to-nature-opennext-cache  # required by OpenNext
+npx wrangler r2 bucket create attuning-to-nature-media           # story audio + images
+npx wrangler r2 bucket create attuning-to-nature-stimuli         # Section 4 videos
+npx wrangler r2 bucket create attuning-to-nature-renders         # Remotion output
 
-# 2. Create the D1 database. Copy the returned `database_id` into wrangler.jsonc
-#    (replace REPLACE_WITH_D1_DATABASE_ID).
-npx wrangler d1 create attuning-to-nature
+# Optional — the resonance query falls back to a D1 cosine scan without it
+npx wrangler vectorize create attuning-to-nature-text --dimensions=1024 --metric=cosine
 
-# 3. Create the four R2 buckets referenced by wrangler.jsonc
-npx wrangler r2 bucket create attuning-to-nature-opennext-cache
-npx wrangler r2 bucket create attuning-to-nature-audio
-npx wrangler r2 bucket create attuning-to-nature-stimuli
-npx wrangler r2 bucket create attuning-to-nature-renders
-
-# 4. Apply the initial schema — local first, then remote
-npm run db:migrate:local
-npm run db:migrate:remote
-
-# 5. Generate typed bindings (Cloudflare env types for TypeScript)
-npm run cf-typegen
+npm run cf-typegen   # regenerate cloudflare-env.d.ts after any binding change
 ```
 
 Then, to deploy:
 
 ```bash
+npm run db:migrate:remote   # remote has 0001–0013 already; this runs 0014+
 npm run deploy
 ```
+
+After a deploy that adds stories, run the two admin passes described in
+[db/README.md](db/README.md) so the atlas's clusters and constellation view
+reflect the new rows.
 
 The first `npm run deploy` registers the Worker `attuning-to-nature`. Bind the `attuningtonature.earth` zone to it from the Cloudflare dashboard (Workers & Pages → attuning-to-nature → Custom domains).
 
@@ -88,6 +118,8 @@ See [CLAUDE.md §3](CLAUDE.md#3-repository-layout) for the canonical layout. Qui
 | `npm run cf-typegen`         | Regenerate `cloudflare-env.d.ts` from `wrangler.jsonc` |
 | `npm run db:migrate:local`   | Apply DB migrations to the local Wrangler state        |
 | `npm run db:migrate:remote`  | Apply DB migrations to remote D1                       |
+| `npm run db:console:local`   | Run SQL against the local DB — pass the query after `--` |
+| `npm run db:console:remote`  | Run SQL against production D1                          |
 | `npm run remotion:studio`    | Open the Remotion studio                               |
 | `npm run remotion:render`    | Render a composition to a file                         |
 | `npm run lint`               | ESLint                                                 |
@@ -97,5 +129,6 @@ See [CLAUDE.md §3](CLAUDE.md#3-repository-layout) for the canonical layout. Qui
 Per [CLAUDE.md §6](CLAUDE.md#iteration-order):
 
 1. ✅ **Bootstrap** — done.
-2. ⏭ **Design system** — propose 2–3 distinct visual directions as static landing-page mocks, with a one-paragraph rationale each.
-3. Section 2 (Educational) → Section 3 (Stories) → Section 4 (Experiment) → Section 1 (Science) → Landing.
+2. ⏭ **Design system** — 2–3 visual directions are sketched under `/design`; none chosen yet. Until one is, `/stories` keeps the palette and page chrome it was designed with, and `globals.css` tokens stay placeholders.
+3. ✅ **Section 3 (Stories)** — the atlas is live at `/stories`: map, contribution flow, embeddings, semantic clusters. Merged from a standalone prototype; see CLAUDE.md §9.
+4. Remaining: Section 2 (Educational) → Section 4 (Experiment) → Section 1 (Science) → Landing.
