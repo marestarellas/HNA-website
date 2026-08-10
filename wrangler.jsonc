@@ -3,10 +3,12 @@
 	"name": "attuning-to-nature",
 	"main": ".open-next/worker.js",
 
-	// Required, not optional: this OAuth token can see more than one account,
-	// and `next dev` runs wrangler non-interactively — without this it cannot
-	// pick one, the remote proxy for the AI/Vectorize bindings fails to start,
-	// and that failure takes down `getCloudflareContext()` for every route.
+	// Required: this OAuth token can see more than one account, and `next dev`
+	// runs wrangler non-interactively, so without this it cannot pick one and
+	// the remote proxy for the AI binding fails to start. When that happens,
+	// every route calling `getCloudflareContext()` returns 500 — in practice
+	// that means all of /api, so pages render but their data fetches fail.
+	// Static pages are unaffected, so most front-end work does not need this.
 	// This is the account owning the `attuning_to_nature` D1 below.
 	"account_id": "5fa5ad096d12a48d705f39a18f50c627",
 	"compatibility_date": "2025-12-01",
@@ -74,14 +76,19 @@
 	// llama-3.1-8b for naming semantic clusters.
 	"ai": { "binding": "AI" },
 
-	// Vectorize index for story text embeddings (bge-m3, 1024-dim, cosine).
-	// Optional: the story routes fall back to a D1 cosine scan when this is
-	// unavailable, which is what local dev uses.
-	// Create remote with:
+	// NOTE: there is deliberately no `vectorize` binding.
+	//
+	// Story resonance (GET /api/stories/:id/resonant) prefers a Vectorize index
+	// when one is bound, and otherwise ranks with a cosine scan over the
+	// embeddings cached in D1. Both code paths are guarded by
+	// `if (env.VECTORIZE_TEXT)`, so leaving it unbound is safe, and the D1 scan
+	// is perfectly adequate at the current corpus size (~115 stories).
+	//
+	// To turn it on later: create the index, add the binding back, and run
+	// POST /api/admin/embed-backfill to populate it.
 	//   npx wrangler vectorize create attuning-to-nature-text --dimensions=1024 --metric=cosine
-	"vectorize": [
-		{ "binding": "VECTORIZE_TEXT", "index_name": "attuning-to-nature-text" }
-	],
+	// Note this needs an OAuth token with the vectorize scope — the default
+	// `wrangler login` scope set does not appear to include it.
 
 	// Rate limit for POST /api/stories — 5 submissions per minute per IP.
 	"unsafe": {

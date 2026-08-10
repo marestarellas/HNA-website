@@ -32,7 +32,9 @@ export interface Env {
   DB: D1Database;
   MEDIA: R2Bucket;
   AI: Ai;
-  VECTORIZE_TEXT: VectorizeIndex;
+  // Optional — not bound in wrangler.jsonc. Both call sites check for it and
+  // fall back to a cosine scan over the embeddings cached in D1.
+  VECTORIZE_TEXT?: VectorizeIndex;
   RL_STORIES: RateLimit;
   CONSENT_VERSION: string;
 }
