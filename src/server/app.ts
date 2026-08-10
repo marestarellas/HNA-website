@@ -37,6 +37,11 @@ export interface Env {
   VECTORIZE_TEXT?: VectorizeIndex;
   RL_STORIES: RateLimit;
   CONSENT_VERSION: string;
+  // Shared secret gating /api/admin/*. Set as a Worker secret:
+  //   npx wrangler secret put ADMIN_TOKEN
+  // and in .dev.vars for local dev. Optional in the type, but the middleware
+  // below denies every admin request when it is missing — see the note there.
+  ADMIN_TOKEN?: string;
 }
 
 const IMAGE_MIMES = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
@@ -62,6 +67,49 @@ function audioExt(mime: string): string {
 
 type Bindings = Env;
 const app = new Hono<{ Bindings: Bindings }>();
+
+/* ============================================================================
+ * Admin authentication
+ *
+ * /api/admin/* triggers expensive work: embed-backfill runs one Workers AI
+ * inference per approved story, and recompute-projection adds an LLM call per
+ * cluster on top. Unauthenticated, a stranger with the URL can run that in a
+ * loop on someone else's bill. These endpoints were written for a Worker on
+ * localhost; the moment the site deployed they became publicly reachable.
+ *
+ * Deliberately FAILS CLOSED: if ADMIN_TOKEN is unset the middleware rejects
+ * everything rather than waving requests through. A misconfigured deploy
+ * should lock the operator out, never open the door.
+ * ========================================================================== */
+
+/** Constant-time string compare, so a wrong token can't be recovered by
+ *  timing the response. Length is allowed to leak; the contents are not. */
+function secretsMatch(a: string, b: string): boolean {
+  const ea = new TextEncoder().encode(a);
+  const eb = new TextEncoder().encode(b);
+  if (ea.length !== eb.length) return false;
+  let diff = 0;
+  for (let i = 0; i < ea.length; i++) diff |= ea[i] ^ eb[i];
+  return diff === 0;
+}
+
+app.use("/api/admin/*", async (c, next) => {
+  const expected = c.env.ADMIN_TOKEN;
+  if (!expected) {
+    console.error("ADMIN_TOKEN is not configured — refusing all admin requests");
+    return c.json({ error: "admin endpoints are not configured" }, 503);
+  }
+
+  // `Authorization: Bearer <token>`, or `X-Admin-Token: <token>` for curl.
+  const auth = c.req.header("authorization") ?? "";
+  const bearer = auth.toLowerCase().startsWith("bearer ") ? auth.slice(7).trim() : "";
+  const supplied = bearer || c.req.header("x-admin-token") || "";
+
+  if (!supplied || !secretsMatch(supplied, expected)) {
+    return c.json({ error: "unauthorized" }, 401);
+  }
+  await next();
+});
 
 /* ============================================================================
  * Helpers
