@@ -122,12 +122,49 @@ export default function LearnPage() {
 					knowing or caring where they came from.
 				</p>
 				<p className="mt-4 text-lg leading-relaxed text-foreground/85">
-					But <em>how</em> you get that trace is not one recipe. Compare the three
-					below. A sound gives up its envelope directly. An EEG has to be band-limited
-					first, because what waxes and wanes is the power in one rhythm rather than
-					the whole trace. And an ECG is not an amplitude problem at all — its
-					information is in the spacing between beats, so the slow trace comes from
-					counting time, not measuring size.
+					There are really two choices here, and running them together is the mistake
+					worth avoiding. The first is what each recording must become before it is a
+					trace at all — a sound and an EEG already are one, but an ECG is not, since
+					its information is in <em>when</em> beats arrive rather than how large they
+					are, so it reduces to instantaneous rate.
+				</p>
+				<p className="mt-4 text-lg leading-relaxed text-foreground/85">
+					The second choice is the one that is easy to miss: having got a trace, you
+					still decide <em>what about it</em> to compare. Three options, and all three
+					are ordinary:
+				</p>
+				<ul className="mt-4 space-y-2 text-lg leading-relaxed text-foreground/85">
+					<li className="flex gap-3">
+						<span aria-hidden className="text-muted">·</span>
+						<span>
+							<strong className="font-normal text-foreground">The trace itself</strong>{" "}
+							— nothing extracted.
+						</span>
+					</li>
+					<li className="flex gap-3">
+						<span aria-hidden className="text-muted">·</span>
+						<span>
+							<strong className="font-normal text-foreground">
+								A frequency component over time
+							</strong>{" "}
+							— how much energy sits in one band, moment to moment. Band-pass, then
+							take the envelope.
+						</span>
+					</li>
+					<li className="flex gap-3">
+						<span aria-hidden className="text-muted">·</span>
+						<span>
+							<strong className="font-normal text-foreground">Complexity over time</strong>{" "}
+							— the scaling exponent recomputed in a sliding window, so that
+							&ldquo;how irregular is this&rdquo; becomes a series rather than a single
+							number.
+						</span>
+					</li>
+				</ul>
+				<p className="mt-4 text-lg leading-relaxed text-foreground/85">
+					Every one of those comes out the same shape: one value per moment. That is
+					precisely why any of them can be handed to any method further down this
+					page — and it is the vertical axis of the grid in step 07.
 				</p>
 				<ChoosingAnObservable />
 

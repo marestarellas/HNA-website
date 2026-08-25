@@ -1,40 +1,63 @@
 /**
- * Synthetic sound, EEG and ECG, plus the observable each one reduces to.
+ * Synthetic sound, EEG and ECG, and the three kinds of time series any of them
+ * can be reduced to.
  *
- * Kept out of the component that draws them, and free of JSX, so a test harness
- * can import it directly and check the maths against known answers — which is
- * the only way to be sure the ECG's heart-rate trace really carries the
- * breathing rhythm the caption claims it does, rather than merely looking as
- * though it might.
+ * Two independent choices are being modelled here, and keeping them separate is
+ * the point:
+ *
+ *   1. WHICH SIGNAL — sound, EEG, ECG. Each arrives in a different form and
+ *      needs a different first move to become a one-dimensional trace at all.
+ *      A sound is already one; an EEG is too; an ECG is not, because its
+ *      information is in beat *timing*, so it reduces to instantaneous rate.
+ *
+ *   2. WHICH FEATURE — and this is the axis that is easy to miss. Having got a
+ *      trace, you still choose what about it to compare: the trace itself, the
+ *      power in one band as it rises and falls, or how its scaling structure
+ *      changes over time. These are the three feature rows of the design-space
+ *      grid, and every one of them is a legitimate input to every coupling
+ *      method further down the page.
+ *
+ * Free of JSX so a harness can import and check it.
  */
 
-import { hilbert, bandpass, coloredNoise, mulberry32, gaussian, zscore } from "./_signals";
+import {
+	hilbert,
+	bandpass,
+	coloredNoise,
+	mulberry32,
+	gaussian,
+	zscore,
+	windowedExponent,
+} from "./_signals";
 
 export const FS = 256;
 export const N = 2048; // 8 seconds
 
-export type Observable = {
+export type Kind = "sound" | "eeg" | "ecg";
+export type Feature = "raw" | "band" | "complexity";
+
+export type Recording = {
+	/** What the instrument records. */
 	raw: number[];
-	/** The slow trace every downstream method actually operates on. */
-	observable: number[];
-	/** Drawn faintly over the raw trace to show the derivation. */
-	overlay?: number[];
-	/** Sample indices of detected beats (ECG only). */
+	/**
+	 * The one-dimensional trace everything downstream operates on. For sound and
+	 * EEG this is the recording itself; for ECG it is instantaneous rate,
+	 * because the waveform is not the object of study.
+	 */
+	base: number[];
+	/** Beat positions, for drawing on the ECG trace. */
 	marks?: number[];
 };
 
-/**
- * Moving average. Real pipelines band-limit an envelope after extracting it;
- * this is the cheap equivalent.
+/** Moving average. Real pipelines band-limit an envelope after extracting it;
+ *  this is the cheap equivalent.
  *
- * Mind the window length. A moving average of duration T is a sinc filter with
- * its first null at 1/T, so it does not merely soften an envelope — it can
- * erase a modulation faster than that outright. An earlier version smoothed the
- * sound envelope over 81 samples (0.32 s at 256 Hz, first null ~3.2 Hz) while
- * offering a swell-rate slider that went to 4 Hz, so the top of the slider's
- * range quietly measured nothing. Keep 1/T comfortably above the fastest
- * modulation the control can ask for.
- */
+ *  Mind the window length. A moving average of duration T is a sinc filter with
+ *  its first null at 1/T, so it does not merely soften an envelope — it can
+ *  erase a modulation faster than that outright. An earlier version smoothed a
+ *  sound envelope over 0.32 s while offering a swell-rate control that went to
+ *  4 Hz, so the top of that control quietly measured nothing. Keep 1/T
+ *  comfortably above the fastest modulation the control can ask for. */
 export function smooth(x: number[], win: number): number[] {
 	const out = new Array<number>(x.length);
 	const half = Math.floor(win / 2);
@@ -50,11 +73,10 @@ export function smooth(x: number[], win: number): number[] {
 	return out;
 }
 
-/**
- * Broadband noise whose loudness swells at `rate` Hz. The envelope comes
- * straight off a Hilbert transform — the simple case.
- */
-export function buildSound(rate: number): Observable {
+/* ------------------------------------------------------------- recordings */
+
+/** Broadband noise whose loudness swells at `rate` Hz. */
+export function recordSound(rate: number): Recording {
 	const rand = mulberry32(7);
 	const carrier: number[] = [];
 	for (let i = 0; i < N; i++) carrier.push(gaussian(rand));
@@ -64,22 +86,12 @@ export function buildSound(rate: number): Observable {
 		const t = i / FS;
 		sig[i] = carrier[i] * (1 + 0.85 * Math.sin(2 * Math.PI * rate * t - Math.PI / 2));
 	}
-
-	const { envelope } = hilbert(sig);
-	// 31 samples ≈ 0.12 s, first null ≈ 8.3 Hz — comfortably above the 4 Hz top
-	// of the swell-rate control, so the whole slider range stays meaningful.
-	const env = smooth(envelope, 31);
-	return { raw: zscore(sig), observable: env, overlay: env };
+	const z = zscore(sig);
+	return { raw: z, base: z };
 }
 
-/**
- * A 1/f background with a 10 Hz alpha rhythm on top, bursting at `burst` Hz.
- *
- * The band-pass is not optional here: the overall amplitude of an EEG says
- * little, because several rhythms and the aperiodic background are summed into
- * it. Isolating the band first is what makes the envelope answer a question.
- */
-export function buildEeg(burst: number): Observable {
+/** A 1/f background with a 10 Hz alpha rhythm bursting at `burst` Hz. */
+export function recordEeg(burst: number): Recording {
 	const bg = coloredNoise(N, 1.6, 21);
 	const sig = new Array<number>(N);
 	for (let i = 0; i < N; i++) {
@@ -87,22 +99,16 @@ export function buildEeg(burst: number): Observable {
 		const spindle = Math.max(0, Math.sin(2 * Math.PI * burst * t - Math.PI / 2));
 		sig[i] = bg[i] * 0.75 + Math.sin(2 * Math.PI * 10 * t) * spindle * 1.9;
 	}
-
-	const alpha = bandpass(sig, FS, 8, 12);
-	const { envelope } = hilbert(alpha);
-	// 61 samples ≈ 0.24 s, first null ≈ 4.2 Hz, well clear of the 1.5 Hz top of
-	// the burst-rate control.
-	const env = smooth(envelope, 61);
-	return { raw: zscore(sig), observable: env, overlay: env };
+	const z = zscore(sig);
+	return { raw: z, base: z };
 }
 
 /**
- * Beats whose spacing is modulated by breathing — respiratory sinus arrhythmia,
- * a real effect. The point of the panel is that this rhythm lives entirely in
- * the *timing*: it is invisible in the trace's amplitude and obvious the moment
- * you plot instantaneous rate.
+ * Beats whose spacing is modulated by breathing — respiratory sinus arrhythmia.
+ * The rhythm lives entirely in the timing: invisible in the trace's amplitude,
+ * obvious the moment you plot instantaneous rate.
  */
-export function buildEcg(resp: number): Observable & { meanBpm: number } {
+export function recordEcg(resp: number): Recording & { meanBpm: number } {
 	const rr0 = 0.85; // ~70 bpm
 	const beats: number[] = [];
 	const rates: number[] = [];
@@ -133,7 +139,6 @@ export function buildEcg(resp: number): Observable & { meanBpm: number } {
 		bump(b + 0.18, 0.22, 0.038); //   T
 	}
 
-	// Instantaneous rate, interpolated between beats.
 	const rate = new Array<number>(N).fill(rates[0] ?? 70);
 	for (let k = 0; k < beats.length - 1; k++) {
 		const i0 = Math.max(0, Math.round(beats[k] * FS));
@@ -148,8 +153,51 @@ export function buildEcg(resp: number): Observable & { meanBpm: number } {
 
 	return {
 		raw: zscore(sig),
-		observable: rate,
+		base: rate,
 		marks: beats.map((b) => Math.round(b * FS)),
 		meanBpm: rates.reduce((s, v) => s + v, 0) / rates.length,
 	};
+}
+
+export function record(kind: Kind, control: number): Recording {
+	if (kind === "eeg") return recordEeg(control);
+	if (kind === "ecg") return recordEcg(control);
+	return recordSound(control);
+}
+
+/* ---------------------------------------------------------------- features */
+
+/** The band each signal's oscillatory feature is taken from, and why. */
+export const BAND: Record<Kind, { lo: number; hi: number; name: string }> = {
+	// Broad, because a wave-break has no carrier frequency worth naming — the
+	// power in almost any slice of it rises and falls with the swell.
+	sound: { lo: 20, hi: 60, name: "20–60 Hz" },
+	// Alpha. The rhythm that actually bursts in the trace above.
+	eeg: { lo: 8, hi: 12, name: "8–12 Hz alpha" },
+	// The high-frequency HRV band — this is literally where respiratory sinus
+	// arrhythmia is measured in the clinical literature.
+	ecg: { lo: 0.15, hi: 0.45, name: "0.15–0.45 Hz (HF / respiratory)" },
+};
+
+/**
+ * Derive one of the three comparable time series from a recording's base trace.
+ *
+ * All three come out the same shape — one value per sample — which is exactly
+ * why any of them can be fed to any coupling method. That interchangeability is
+ * the lesson.
+ */
+export function feature(rec: Recording, kind: Kind, which: Feature): number[] {
+	if (which === "raw") return rec.base;
+
+	if (which === "band") {
+		const { lo, hi } = BAND[kind];
+		const filtered = bandpass(rec.base, FS, lo, hi);
+		const { envelope } = hilbert(filtered);
+		// Smoothing window chosen per band: fast enough to follow the modulation
+		// the control imposes, slow enough to suppress the envelope's ripple.
+		return smooth(envelope, kind === "ecg" ? 129 : 31);
+	}
+
+	// Complexity as a trace: scaling exponent in a sliding window.
+	return windowedExponent(rec.base, 512, 32).trace;
 }

@@ -444,6 +444,51 @@ export function dfa(
 }
 
 /**
+ * Scaling exponent computed in a sliding window, giving complexity as a *time
+ * series* rather than a single number for the whole recording.
+ *
+ * This is what makes complexity a feature you can couple on. One alpha per
+ * recording can only be compared across recordings; an alpha that moves over
+ * time can be correlated against another moving trace, which is the whole basis
+ * of the complexity family.
+ *
+ * Returned at full length — the value for each window is held across the
+ * samples it covers — so it plots against the same time axis as the signal it
+ * came from.
+ */
+export function windowedExponent(
+	x: number[],
+	win = 512,
+	step = 32
+): { trace: number[]; centres: number[]; values: number[] } {
+	const values: number[] = [];
+	const centres: number[] = [];
+
+	for (let start = 0; start + win <= x.length; start += step) {
+		const seg = x.slice(start, start + win);
+		values.push(dfa(seg).alpha);
+		centres.push(start + win / 2);
+	}
+
+	// Linear interpolation back onto the full time base.
+	const trace = new Array<number>(x.length);
+	if (values.length === 0) return { trace: trace.fill(0), centres, values };
+	for (let i = 0; i < x.length; i++) {
+		if (i <= centres[0]) {
+			trace[i] = values[0];
+		} else if (i >= centres[centres.length - 1]) {
+			trace[i] = values[values.length - 1];
+		} else {
+			let k = 0;
+			while (k < centres.length - 1 && centres[k + 1] < i) k++;
+			const f = (i - centres[k]) / (centres[k + 1] - centres[k]);
+			trace[i] = values[k] + (values[k + 1] - values[k]) * f;
+		}
+	}
+	return { trace, centres, values };
+}
+
+/**
  * Phase-shuffled surrogate: randomise the Fourier phases while keeping the
  * amplitude spectrum. The result has the same power spectrum and therefore the
  * same autocorrelation as the original, but any genuine coupling to another
