@@ -305,11 +305,25 @@ export default function LearnPage() {
 				<p className="text-lg leading-relaxed text-foreground/85">
 					Now that the four questions are familiar, the rest of the field collapses into
 					something small. Every coupling method is a choice of <em>what to compare</em>{" "}
-					— the raw trace, an oscillatory feature, a complexity feature — crossed with
-					one of the four ways of comparing it. Two formidable-sounding methods turn out
-					to be combinations you already understand.
+					— the three features from step 02 — crossed with one of the four ways of
+					comparing it. Twelve cells, and every one of them is occupied.
+				</p>
+				<p className="mt-4 text-lg leading-relaxed text-foreground/85">
+					The faded cells are the interesting ones. They do not mean &ldquo;impossible&rdquo;;
+					they mean &ldquo;nobody does this, and here is why&rdquo;. Oscillatory coupling
+					on a raw trace is faded not because it fails but because it cannot happen —
+					phase has to be extracted first, so any method that appears to do it is quietly
+					taking the feature step for you.
 				</p>
 				<CouplingDesignSpace />
+
+				<KeyIdea>
+					Two names dissolve here. Phase–amplitude coupling is not a separate kind of
+					thing — it is oscillatory coupling between two oscillatory features. And the
+					familiar &ldquo;complexity&rdquo; methods are a Pearson correlation wearing a
+					complexity feature; the genuinely scale-aware bivariate measures are a
+					different cell entirely.
+				</KeyIdea>
 			</section>
 
 			{/* ---------------------------------------------------------- 08 surrogates */}

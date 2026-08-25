@@ -33,6 +33,24 @@
 	--viz-body:   #1E6FA8;       /* physiology — EEG, HRV, respiration */
 	--viz-result: #A33A6E;       /* the derived measure — r, PLV, MI, alpha */
 	--viz-null:   #9a948a;       /* surrogate / null distribution — deliberately grey */
+
+	/* ---------------------------------------------------------------------
+	   Coupling-family colours, used ONLY by the design-space grid.
+	   These are the four families' identity colours from the methods report,
+	   re-stepped for this site's surfaces — the report's originals read grey
+	   in the teal slot here and fell below 3:1 contrast. Same hues, own steps,
+	   validated on both surfaces.
+
+	   They are scoped to that one figure on purpose. Everywhere else colour
+	   means an entity (world / body / result); inside the grid a column IS the
+	   entity, so a fifth through eighth hue earns its place there and nowhere
+	   else. The column headers are text-labelled, so colour never carries the
+	   identity alone.
+	   --------------------------------------------------------------------- */
+	--fam-linear:      #3070CC;
+	--fam-oscillatory: #0B8E70;
+	--fam-information: #71509F;
+	--fam-complexity:  #B0710A;
 }
 
 /* ---------------------------------------------------------------------------
@@ -63,6 +81,11 @@
 		--viz-body:   #4A90C4;
 		--viz-result: #BC5F8C;
 		--viz-null:   #6f6a62;
+
+		--fam-linear:      #5590DA;
+		--fam-oscillatory: #0E9B72;
+		--fam-information: #9070C2;
+		--fam-complexity:  #C08420;
 	}
 }
 
