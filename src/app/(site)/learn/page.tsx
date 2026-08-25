@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { EnvelopeExtraction } from "@/components/demos/EnvelopeExtraction";
+import { ChoosingAnObservable } from "@/components/demos/ChoosingAnObservable";
 import { CouplingDesignSpace } from "@/components/demos/CouplingDesignSpace";
 import { LaggedCrossCorrelation } from "@/components/demos/LaggedCrossCorrelation";
 import { PhaseLocking } from "@/components/demos/PhaseLocking";
@@ -111,21 +111,31 @@ export default function LearnPage() {
 					Almost every signal worth studying is really two signals stacked together:
 					something fast, and a slower shape riding on top of it. A voice has a pitch
 					and a cadence. A flame has a flicker and a guttering. Footsteps have an impact
-					and a gait.
+					and a gait. Usually the slow shape carries the relationship you are hunting,
+					and the fast one is merely the carrier it is written on.
 				</p>
 				<p className="mt-4 text-lg leading-relaxed text-foreground/85">
-					Very often the slow shape carries the relationship you are hunting, and the
-					fast one is merely the carrier it is written on. So the first move is not a
-					comparison at all. It is a choice: keep the <em>envelope</em> — how much is
-					happening, moment to moment — and throw the carrier away.
+					So the first move is not a comparison at all. It is a reduction: turn each
+					recording into one slow trace of how much is happening. Do that to two
+					unlike signals and they become the same kind of object, sampled at the same
+					rate — and every method further down this page will work on them without
+					knowing or caring where they came from.
 				</p>
-				<EnvelopeExtraction />
+				<p className="mt-4 text-lg leading-relaxed text-foreground/85">
+					But <em>how</em> you get that trace is not one recipe. Compare the three
+					below. A sound gives up its envelope directly. An EEG has to be band-limited
+					first, because what waxes and wanes is the power in one rhythm rather than
+					the whole trace. And an ECG is not an amplitude problem at all — its
+					information is in the spacing between beats, so the slow trace comes from
+					counting time, not measuring size.
+				</p>
+				<ChoosingAnObservable />
 
 				<KeyIdea>
-					This is what makes unlike things comparable at all. A sound, a movement and a
-					pulse each become the same kind of object — a slow trace of how much is
-					happening — and every method below works on that, indifferent to where it
-					came from.
+					Choosing the observable is a modelling decision, not a preprocessing step.
+					It encodes what you think matters about the signal — and applying the same
+					transform to everything because it worked once is the fastest way to measure
+					something real about a quantity nobody cares about.
 				</KeyIdea>
 			</section>
 

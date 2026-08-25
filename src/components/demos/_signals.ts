@@ -141,6 +141,46 @@ export function hilbert(x: number[]): { envelope: number[]; phase: number[] } {
 	return { envelope, phase };
 }
 
+/**
+ * Zero-phase band-pass by masking the spectrum: forward FFT, null every bin
+ * outside [lo, hi], invert. Crude next to a Butterworth section — the brick-wall
+ * edge rings a little — but it introduces no phase shift at all, which matters
+ * here: these demos show an envelope sitting on top of the wave that produced
+ * it, and a filter that slid the signal sideways would quietly teach a lie.
+ *
+ * Both halves of each conjugate pair are zeroed together so the inverse stays
+ * real.
+ */
+export function bandpass(x: number[], fs: number, lo: number, hi: number): number[] {
+	const n = x.length;
+	const N = nextPow2(n);
+	const re = new Float64Array(N);
+	const im = new Float64Array(N);
+	for (let i = 0; i < n; i++) re[i] = x[i];
+
+	fft(re, im);
+
+	const df = fs / N;
+	const half = N >> 1;
+	for (let k = 0; k <= half; k++) {
+		const f = k * df;
+		if (f < lo || f > hi) {
+			re[k] = 0;
+			im[k] = 0;
+			if (k > 0 && k < half) {
+				re[N - k] = 0;
+				im[N - k] = 0;
+			}
+		}
+	}
+
+	fft(re, im, true);
+
+	const out = new Array<number>(n);
+	for (let i = 0; i < n; i++) out[i] = re[i];
+	return out;
+}
+
 /* ---------------------------------------------------------------- synthesis */
 
 /**
