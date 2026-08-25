@@ -15,17 +15,78 @@
 	--muted: #6b6b6b;
 	--rule: #d8d4cc;             /* hairline rules */
 	--accent: #2a2a2a;           /* placeholder, not the final accent */
+
+	/* ---------------------------------------------------------------------
+	   Signal colours for the Learn demos.
+	   Assigned by ENTITY, not by series order, and used identically in every
+	   demo: whatever is orange is always the environment, whatever is blue is
+	   always the body. That consistency is the whole point — a reader who
+	   learns the mapping once carries it through the entire section.
+	   Validated for colour-vision deficiency and contrast against the
+	   surfaces above (lightness band, chroma floor, CVD + normal-vision
+	   adjacent separation, 3:1 contrast). Do not nudge these by eye: re-run
+	   the palette validator if they ever change.
+	   Identity is never carried by colour alone — every demo also labels its
+	   traces directly.
+	   --------------------------------------------------------------------- */
+	--viz-world:  #BE6410;       /* environment — audio envelope, video motion */
+	--viz-body:   #1E6FA8;       /* physiology — EEG, HRV, respiration */
+	--viz-result: #A33A6E;       /* the derived measure — r, PLV, MI, alpha */
+	--viz-null:   #9a948a;       /* surrogate / null distribution — deliberately grey */
 }
 
+/* ---------------------------------------------------------------------------
+   THEME
+   Three states, not two. `data-theme` is absent by default, in which case the
+   operating system decides; setting it to "light" or "dark" overrides that
+   choice in either direction. The dark values are therefore written twice —
+   once for the system preference and once for the explicit opt-in — because
+   plain CSS cannot share one declaration block between a media query and an
+   attribute selector. Keep the two lists identical.
+
+   The `:not([data-theme="light"])` guard is what makes the toggle work on a
+   machine set to dark: without it, the media query would keep winning and a
+   reader who asked for light would not get it.
+   --------------------------------------------------------------------------- */
+
 @media (prefers-color-scheme: dark) {
-	:root {
+	:root:not([data-theme="light"]) {
 		--background: #0d0c0a;
 		--foreground: #ece8de;
 		--muted: #8a8578;
 		--rule: #2a2824;
 		--accent: #ece8de;
+
+		/* Re-stepped for the dark surface, not flipped — same hues, own steps,
+		   re-validated against #0d0c0a. */
+		--viz-world:  #C97A28;
+		--viz-body:   #4A90C4;
+		--viz-result: #BC5F8C;
+		--viz-null:   #6f6a62;
 	}
 }
+
+:root[data-theme="dark"] {
+	--background: #0d0c0a;
+	--foreground: #ece8de;
+	--muted: #8a8578;
+	--rule: #2a2824;
+	--accent: #ece8de;
+
+	--viz-world:  #C97A28;
+	--viz-body:   #4A90C4;
+	--viz-result: #BC5F8C;
+	--viz-null:   #6f6a62;
+}
+
+/* Tell the browser which way each theme runs, so form controls, scrollbars and
+   the like are painted to match rather than staying stubbornly light. */
+:root { color-scheme: light; }
+@media (prefers-color-scheme: dark) {
+	:root:not([data-theme="light"]) { color-scheme: dark; }
+}
+:root[data-theme="dark"] { color-scheme: dark; }
+:root[data-theme="light"] { color-scheme: light; }
 
 @theme inline {
 	--color-background: var(--background);
@@ -33,6 +94,11 @@
 	--color-muted: var(--muted);
 	--color-rule: var(--rule);
 	--color-accent: var(--accent);
+
+	--color-viz-world: var(--viz-world);
+	--color-viz-body: var(--viz-body);
+	--color-viz-result: var(--viz-result);
+	--color-viz-null: var(--viz-null);
 
 	/* System stacks — final typography to be chosen in the design-system PR. */
 	--font-serif: ui-serif, Georgia, "Times New Roman", serif;

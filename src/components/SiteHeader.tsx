@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const NAV = [
 	{ href: "/learn", label: "Learn" },
@@ -17,20 +18,23 @@ export function SiteHeader() {
 				>
 					attuning to nature
 				</Link>
-				<nav>
-					<ul className="flex items-baseline gap-6 text-xs uppercase tracking-[0.18em] text-muted">
-						{NAV.map((item) => (
-							<li key={item.href}>
-								<Link
-									href={item.href}
-									className="transition-colors hover:text-foreground"
-								>
-									{item.label}
-								</Link>
-							</li>
-						))}
-					</ul>
-				</nav>
+				<div className="flex items-baseline gap-6">
+					<nav>
+						<ul className="flex items-baseline gap-6 text-xs uppercase tracking-[0.18em] text-muted">
+							{NAV.map((item) => (
+								<li key={item.href}>
+									<Link
+										href={item.href}
+										className="transition-colors hover:text-foreground"
+									>
+										{item.label}
+									</Link>
+								</li>
+							))}
+						</ul>
+					</nav>
+					<ThemeToggle />
+				</div>
 			</div>
 		</header>
 	);
