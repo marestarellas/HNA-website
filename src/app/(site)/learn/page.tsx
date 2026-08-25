@@ -6,6 +6,13 @@ import { PhaseLocking } from "@/components/demos/PhaseLocking";
 import { NonlinearDependence } from "@/components/demos/NonlinearDependence";
 import { ComplexityMatching } from "@/components/demos/ComplexityMatching";
 import { SurrogateTest } from "@/components/demos/SurrogateTest";
+import {
+	Step,
+	Asks,
+	KeyIdea,
+	BlindSpot,
+	FourQuestions,
+} from "@/components/demos/_didactic";
 
 export const metadata: Metadata = {
 	title: "Learn — Attuning to Nature",
@@ -14,49 +21,35 @@ export const metadata: Metadata = {
 };
 
 const SECTIONS = [
-	{ id: "question", label: "The question" },
-	{ id: "observable", label: "Choosing an observable" },
-	{ id: "design-space", label: "The design space" },
-	{ id: "linear", label: "Linear" },
-	{ id: "oscillatory", label: "Oscillatory" },
-	{ id: "information", label: "Information" },
-	{ id: "complexity", label: "Complexity" },
-	{ id: "surrogates", label: "Is it real?" },
-	{ id: "choosing", label: "Choosing among them" },
+	{ id: "problem", label: "01 · The problem" },
+	{ id: "observable", label: "02 · An observable" },
+	{ id: "linear", label: "03 · Linear" },
+	{ id: "oscillatory", label: "04 · Oscillatory" },
+	{ id: "information", label: "05 · Information" },
+	{ id: "complexity", label: "06 · Complexity" },
+	{ id: "design-space", label: "07 · The whole space" },
+	{ id: "surrogates", label: "08 · Is it real?" },
 ];
-
-function H2({ id, eyebrow, children }: { id: string; eyebrow?: string; children: React.ReactNode }) {
-	return (
-		<>
-			{eyebrow && (
-				<p className="font-sans text-[10px] uppercase tracking-[0.22em] text-muted">{eyebrow}</p>
-			)}
-			<h2 id={id} className="mt-2 scroll-mt-8 text-2xl leading-snug md:text-3xl">
-				{children}
-			</h2>
-		</>
-	);
-}
 
 export default function LearnPage() {
 	return (
 		<article className="mx-auto w-full max-w-3xl px-6 py-16 font-serif">
+			{/* ---------------------------------------------------------------- lede */}
 			<p className="font-sans text-xs uppercase tracking-[0.22em] text-muted">Section 2</p>
 			<h1 className="mt-3 text-4xl leading-tight md:text-5xl">
 				How to measure an attunement
 			</h1>
-			<p className="mt-6 text-lg leading-relaxed text-foreground/85">
+			<p className="mt-6 text-xl leading-relaxed text-foreground/85">
 				Two things unfold in time — a tide and a breath, a birdsong and a heartbeat, a
-				forest canopy shifting in wind and the eyes moving across it — and you want to
-				know whether they are related. That question sounds simple and is not, because
-				&ldquo;related&rdquo; turns out to mean at least four different things, and the
-				instrument you reach for decides which of them you can see.
+				canopy moving in wind and the eyes moving across it — and you want to know
+				whether they are related.
 			</p>
 			<p className="mt-4 text-lg leading-relaxed text-foreground/85">
-				This page is about those instruments and what each one is actually asking. Every
-				figure computes what it claims to compute — real transforms on real synthetic
-				signals — so you can move a control and watch the answer change rather than take
-				a diagram&rsquo;s word for it.
+				That question sounds simple and is not, because &ldquo;related&rdquo; turns out
+				to mean at least four different things. This page walks through them one at a
+				time. Every figure computes what it claims to — real transforms on real
+				synthetic signals — so you can move a control and watch the answer change
+				rather than take a diagram&rsquo;s word for it.
 			</p>
 
 			<nav aria-label="Sections" className="mt-10 border-y border-rule py-4">
@@ -74,143 +67,168 @@ export default function LearnPage() {
 				</ul>
 			</nav>
 
-			{/* ------------------------------------------------------------ question */}
+			{/* ------------------------------------------------------------- 01 problem */}
 			<section className="mt-14">
-				<H2 id="question" eyebrow="The problem">
-					Two signals, and no obvious way to compare them
-				</H2>
-				<p className="mt-5 text-lg leading-relaxed text-foreground/85">
-					Put any two recordings side by side and, usually, nothing lines up. If you
-					simply correlate them you will get a number near zero, and that number will
-					be honest and useless — because you have asked whether they rise and fall{" "}
-					<em>together</em>, when the interesting relationships in living systems are
-					almost never that.
+				<Step
+					n={1}
+					id="problem"
+					eyebrow="The problem"
+					title="One number cannot answer this"
+				/>
+				<p className="text-lg leading-relaxed text-foreground/85">
+					Put any two recordings side by side and, usually, nothing lines up. Correlate
+					them and you get a number near zero — honest, and useless. Because you asked
+					whether they rise and fall <em>together</em>, and that is only one of the ways
+					two things can be bound to each other.
 				</p>
 				<p className="mt-4 text-lg leading-relaxed text-foreground/85">
-					One thing might track another after a delay. It might keep time with its
-					rhythm while staying a quarter-cycle behind. It might respond non-linearly,
-					so that a perfectly real dependence averages out to nothing. Or it might not
-					agree in timing at all, and instead share the <em>texture</em> of its
-					variability. Each of those is a different question about the same pair of
-					signals, and each needs its own instrument. That is why what follows has four
-					families rather than one measure.
+					One might follow the other after a delay. It might keep time with its rhythm
+					while staying permanently out of step. It might respond in a way that bends,
+					so a real dependence averages out to nothing. Or it might not agree in timing
+					at all, and instead share the <em>texture</em> of its variability.
 				</p>
+
+				<KeyIdea>
+					Four different relationships, four different instruments. Reaching for the
+					wrong one does not give you a weak answer — it gives you zero, confidently.
+				</KeyIdea>
+
+				<p className="mt-6 text-lg leading-relaxed text-foreground/85">
+					Here is the whole map before we start. Each of these is a section below.
+				</p>
+				<FourQuestions />
 			</section>
 
-			{/* ---------------------------------------------------------- observable */}
+			{/* ---------------------------------------------------------- 02 observable */}
 			<section className="mt-14">
-				<H2 id="observable" eyebrow="First principle">
-					Before you compare anything, decide what you are comparing
-				</H2>
-				<p className="mt-5 text-lg leading-relaxed text-foreground/85">
-					Almost every signal worth studying is really two signals stacked on each
-					other: something fast, and a slower shape riding on top of it. A voice has a
-					pitch and a cadence. A flame has a flicker and a guttering. Footsteps have an
-					impact and a gait. And very often the slow shape is the one that carries the
-					relationship you are hunting, while the fast one is the carrier it happens to
-					be written on.
+				<Step
+					n={2}
+					id="observable"
+					eyebrow="Before any comparison"
+					title="First decide what you are comparing"
+				/>
+				<p className="text-lg leading-relaxed text-foreground/85">
+					Almost every signal worth studying is really two signals stacked together:
+					something fast, and a slower shape riding on top of it. A voice has a pitch
+					and a cadence. A flame has a flicker and a guttering. Footsteps have an impact
+					and a gait.
 				</p>
 				<p className="mt-4 text-lg leading-relaxed text-foreground/85">
-					So the first move is not a comparison at all. It is a choice of observable:
-					throw away the carrier and keep its <em>envelope</em> — how much is happening,
-					moment to moment — extracted here with a Hilbert transform.
+					Very often the slow shape carries the relationship you are hunting, and the
+					fast one is merely the carrier it is written on. So the first move is not a
+					comparison at all. It is a choice: keep the <em>envelope</em> — how much is
+					happening, moment to moment — and throw the carrier away.
 				</p>
 				<EnvelopeExtraction />
-				<p className="mt-1 text-lg leading-relaxed text-foreground/85">
-					This choice is doing more work than it appears to. It is what makes
-					unlike things comparable in the first place: a sound and a movement and a
-					physiological rhythm all become slow one-dimensional traces of the same kind,
-					sampled at the same rate. Every method below operates on traces of exactly
-					that shape, and none of them knows or cares what they were made from. The
-					swell of waves is one example of such a rhythm; it is not a privileged one.
-				</p>
+
+				<KeyIdea>
+					This is what makes unlike things comparable at all. A sound, a movement and a
+					pulse each become the same kind of object — a slow trace of how much is
+					happening — and every method below works on that, indifferent to where it
+					came from.
+				</KeyIdea>
 			</section>
 
-			{/* -------------------------------------------------------- design space */}
+			{/* ------------------------------------------------------------- 03 linear */}
 			<section className="mt-14">
-				<H2 id="design-space" eyebrow="The map">
-					Every analysis is a feature crossed with a comparison
-				</H2>
-				<p className="mt-5 text-lg leading-relaxed text-foreground/85">
-					Coupling methods proliferate, and their names make them sound like a zoo of
-					unrelated techniques. They are not. Each one is a choice of{" "}
-					<em>what to compare</em> — the raw trace, an oscillatory feature, a complexity
-					feature — crossed with a choice of <em>how to compare it</em>. Laying them on
-					that grid collapses the zoo into something you can hold in your head, and
-					makes two formidable-sounding methods reveal themselves as combinations you
-					already understand.
-				</p>
-				<CouplingDesignSpace />
-			</section>
-
-			{/* -------------------------------------------------------------- linear */}
-			<section className="mt-14">
-				<H2 id="linear" eyebrow="Family one">
-					Linear — do they rise and fall together, allowing for a delay?
-				</H2>
-				<p className="mt-5 text-lg leading-relaxed text-foreground/85">
-					The simplest question, and the one worth asking first. Its only real subtlety
-					is the delay: effects take time to travel, so a correlation computed where two
-					signals happen to sit will understate a real relationship badly. Slide one past
-					the other, take the peak, and report both the strength and the lag at which it
-					occurred — the lag is often the more interesting of the two, because it is a
-					claim about mechanism rather than magnitude.
+				<Step
+					n={3}
+					id="linear"
+					eyebrow="Family one"
+					title="Linear — moving together, in step"
+					glyph="linear"
+				/>
+				<Asks>Do they rise and fall together, allowing for a delay?</Asks>
+				<p className="text-lg leading-relaxed text-foreground/85">
+					The simplest question, and the one worth asking first. Its subtlety is the
+					delay: effects take time to travel, so a correlation computed where two
+					signals happen to sit will understate a real relationship badly. Slide one
+					past the other and take the peak.
 				</p>
 				<LaggedCrossCorrelation />
+				<BlindSpot>
+					relationships that bend, and anything locked at a constant offset — both
+					register as roughly zero.
+				</BlindSpot>
+				<KeyIdea>
+					The lag is often worth more than the correlation. A strength is a
+					description; a delay is a claim about mechanism.
+				</KeyIdea>
 			</section>
 
-			{/* --------------------------------------------------------- oscillatory */}
+			{/* -------------------------------------------------------- 04 oscillatory */}
 			<section className="mt-14">
-				<H2 id="oscillatory" eyebrow="Family two">
-					Oscillatory — is the phase relationship stable?
-				</H2>
-				<p className="mt-5 text-lg leading-relaxed text-foreground/85">
+				<Step
+					n={4}
+					id="oscillatory"
+					eyebrow="Family two"
+					title="Oscillatory — keeping time"
+					glyph="oscillatory"
+				/>
+				<Asks>Is the timing relationship between them stable?</Asks>
+				<p className="text-lg leading-relaxed text-foreground/85">
 					Entrainment is not really about amplitudes agreeing. It is about a{" "}
 					<em>constant</em> relationship in phase — one thing keeping time with another,
 					whatever the offset between them happens to be. Phase-locking value asks that
-					and nothing else: is the phase difference the same now as it was a moment ago?
+					and nothing else: is the gap the same now as it was a moment ago?
 				</p>
 				<PhaseLocking />
 				<p className="mt-1 text-lg leading-relaxed text-foreground/85">
-					Coherence asks a stricter version of the same question, requiring phase{" "}
-					<em>and</em> amplitude to agree together. That strictness is a real choice with
-					real costs: on signals whose loudness wanders — which is most natural ones —
-					it will refuse to see relationships that a phase-only measure finds easily.
-					Matching the estimator to the kind of regularity a signal actually has is not
-					a technicality. It is most of the analysis.
+					Coherence asks a stricter version, requiring phase <em>and</em> amplitude to
+					agree together. That strictness has a real cost: on signals whose loudness
+					wanders — which is most natural ones — it refuses to see relationships a
+					phase-only measure finds easily.
 				</p>
+				<BlindSpot>
+					relationships with no rhythm to hold on to. Phase is only meaningful for
+					something that oscillates.
+				</BlindSpot>
+				<KeyIdea>
+					Two signals can be perfectly locked and completely uncorrelated at the same
+					time. Choosing the estimator that matches the kind of regularity a signal
+					actually has is not a technicality — it is most of the analysis.
+				</KeyIdea>
 			</section>
 
-			{/* --------------------------------------------------------- information */}
+			{/* -------------------------------------------------------- 05 information */}
 			<section className="mt-14">
-				<H2 id="information" eyebrow="Family three">
-					Information — is there any dependence at all, and which way does it run?
-				</H2>
-				<p className="mt-5 text-lg leading-relaxed text-foreground/85">
+				<Step
+					n={5}
+					id="information"
+					eyebrow="Family three"
+					title="Information — any dependence at all"
+					glyph="information"
+				/>
+				<Asks>Does knowing one of them reduce your uncertainty about the other?</Asks>
+				<p className="text-lg leading-relaxed text-foreground/85">
 					A correlation of zero means &ldquo;no <em>linear</em> relationship&rdquo;. It
 					does not mean the two are unrelated, and reading it that way discards every
-					relationship that bends. Mutual information asks the general question instead:
-					does knowing one of these reduce my uncertainty about the other, by any route
-					at all?
+					relationship that bends. Mutual information asks the general question instead,
+					and does not care what shape the answer takes.
 				</p>
 				<NonlinearDependence />
-				<p className="mt-1 text-lg leading-relaxed text-foreground/85">
-					The generality costs something. Mutual information has no sign, so it cannot
-					tell you that more of one meant less of the other; it is hungrier for data;
-					and — as the &ldquo;independent&rdquo; case above quietly shows — it reports
-					dependence that is not there whenever signals are smooth. Granger causality
-					and transfer entropy belong to this same family and add a direction, asking
-					whether one signal&rsquo;s past improves prediction of the other&rsquo;s
-					future.
-				</p>
+				<BlindSpot>
+					direction and sign. It will tell you the two are bound together, never that
+					more of one meant less of the other. Granger causality and transfer entropy
+					belong to this family and add the direction back.
+				</BlindSpot>
+				<KeyIdea>
+					Generality is not free: this measure reports dependence that is not there
+					whenever signals are smooth — which is exactly why the last section exists.
+				</KeyIdea>
 			</section>
 
-			{/* ---------------------------------------------------------- complexity */}
+			{/* --------------------------------------------------------- 06 complexity */}
 			<section className="mt-14">
-				<H2 id="complexity" eyebrow="Family four">
-					Complexity — do they share a way of varying?
-				</H2>
-				<p className="mt-5 text-lg leading-relaxed text-foreground/85">
+				<Step
+					n={6}
+					id="complexity"
+					eyebrow="Family four"
+					title="Complexity — a shared way of varying"
+					glyph="complexity"
+				/>
+				<Asks>Do they vary in the same way, across scales?</Asks>
+				<p className="text-lg leading-relaxed text-foreground/85">
 					The strangest family, and the one that best fits what attunement between a
 					body and a place might actually be. Two things can be deeply related without
 					ever lining up in time. What they share instead is the{" "}
@@ -218,57 +236,91 @@ export default function LearnPage() {
 					scales relates to variability at coarse ones.
 				</p>
 				<ComplexityMatching />
+				<BlindSpot>
+					timing, entirely. Two perfectly matched signals need never coincide, and this
+					measure would not notice if they did.
+				</BlindSpot>
+				<KeyIdea>
+					Attunement need not mean simultaneity. Two people walking together do not
+					synchronise step for step, yet the scaling of their gait variability
+					converges.
+				</KeyIdea>
 			</section>
 
-			{/* ---------------------------------------------------------- surrogates */}
+			{/* -------------------------------------------------------- 07 design space */}
 			<section className="mt-14">
-				<H2 id="surrogates" eyebrow="The check">
-					A coupling number means nothing until you know what nothing looks like
-				</H2>
-				<p className="mt-5 text-lg leading-relaxed text-foreground/85">
-					Every estimator above returns a number, and every one of them returns a
-					number greater than zero even when there is nothing there. Smooth signals
-					correlate with each other by accident. Autocorrelated signals manufacture
-					mutual information out of nothing at all. Sample sizes that look generous are
-					not, once you notice that a slow signal contains far fewer independent
-					observations than it does samples.
+				<Step
+					n={7}
+					id="design-space"
+					eyebrow="Zooming out"
+					title="The whole space, in one grid"
+				/>
+				<p className="text-lg leading-relaxed text-foreground/85">
+					Now that the four questions are familiar, the rest of the field collapses into
+					something small. Every coupling method is a choice of <em>what to compare</em>{" "}
+					— the raw trace, an oscillatory feature, a complexity feature — crossed with
+					one of the four ways of comparing it. Two formidable-sounding methods turn out
+					to be combinations you already understand.
+				</p>
+				<CouplingDesignSpace />
+			</section>
+
+			{/* ---------------------------------------------------------- 08 surrogates */}
+			<section className="mt-14">
+				<Step
+					n={8}
+					id="surrogates"
+					eyebrow="The check that makes it mean something"
+					title="You need to know what nothing looks like"
+				/>
+				<Asks>How large would this number be if there were no relationship at all?</Asks>
+				<p className="text-lg leading-relaxed text-foreground/85">
+					Every estimator above returns a number greater than zero even when there is
+					nothing there. Smooth signals correlate by accident. Autocorrelated signals
+					manufacture mutual information out of nothing. A recording that looks
+					generously long contains far fewer independent observations than it does
+					samples.
 				</p>
 				<p className="mt-4 text-lg leading-relaxed text-foreground/85">
-					The only defence is to build a null on purpose: destroy the relationship while
-					keeping everything else about the signals intact — same spectrum, same
-					autocorrelation, same distribution — measure again, and repeat until you know
-					the shape of nothing. Then ask where your real number falls in it.
+					The defence is to build a null on purpose: destroy the relationship while
+					keeping everything else — same spectrum, same autocorrelation, same
+					distribution — measure again, and repeat until you know the shape of nothing.
+					Then ask where your real number falls in it.
 				</p>
 				<SurrogateTest />
+				<KeyIdea>
+					A coupling value on its own is not a result. The result is where it sits
+					relative to a null you built deliberately.
+				</KeyIdea>
 			</section>
 
-			{/* ------------------------------------------------------------ choosing */}
+			{/* ------------------------------------------------------------- closing */}
 			<section className="mt-14">
-				<H2 id="choosing" eyebrow="The principle underneath">
-					No measure is best; each one is a question
-				</H2>
-				<p className="mt-5 text-lg leading-relaxed text-foreground/85">
+				<Step
+					n={9}
+					id="choosing"
+					eyebrow="The principle underneath"
+					title="No measure is best; each one is a question"
+				/>
+				<p className="text-lg leading-relaxed text-foreground/85">
 					It is tempting to look for the most sensitive method and use it everywhere.
-					That instinct is wrong, and the four demos above show why. Construct a pair of
-					signals coupled purely in phase and the linear measure reports nothing.
-					Construct a pair coupled through a fold or a square and the phase measure
-					reports nothing. Match two signals in scaling alone and every timing-based
-					measure on the page returns zero, correctly, because there is no timing
-					relationship to find.
+					The four demos above show why that instinct fails. Build a pair coupled purely
+					in phase and the linear measure reports nothing. Build a pair coupled through
+					a fold and the phase measure reports nothing. Match two signals in scaling
+					alone and every timing-based measure returns zero — correctly, because there
+					is no timing relationship to find.
 				</p>
-				<p className="mt-4 text-lg leading-relaxed text-foreground/85">
-					Each estimator is not a better or worse detector of one underlying thing
-					called coupling. Each is a specific question, answered honestly. Which means
-					the real work happens before any of them runs — in deciding what kind of
-					relationship you think is there, and therefore what would count as evidence
-					of it. A method chosen after seeing the data is not a measurement; it is a
+				<KeyIdea>
+					The real work happens before any estimator runs: deciding what kind of
+					relationship you think is there, and therefore what would count as evidence.
+					A method chosen after seeing the data is not a measurement — it is a
 					preference.
-				</p>
-				<p className="mt-4 text-lg leading-relaxed text-foreground/85">
-					That is also the honest reason to show all four rather than name a favourite.
+				</KeyIdea>
+				<p className="mt-6 text-lg leading-relaxed text-foreground/85">
+					That is also the honest reason to show four rather than name a favourite.
 					Attunement between a living thing and its surroundings almost certainly is not
 					one phenomenon. A body may track a rhythm in one respect, ignore it in
-					another, and share a texture with it in a third — all at once, and all real.
+					another, and share a texture with it in a third — at once, and all of it real.
 				</p>
 			</section>
 
