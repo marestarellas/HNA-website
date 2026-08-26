@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import { SERIES_COLOR } from "./_ui";
+import { FAMILY_TOKEN, type Family } from "./_families";
 
 /**
  * Teaching furniture for the Learn page.
@@ -18,7 +19,9 @@ import { SERIES_COLOR } from "./_ui";
  * as well as in the data.
  */
 
-export type Family = "linear" | "oscillatory" | "information" | "complexity";
+// Re-exported for convenience, but the definitions live in a directive-free
+// module so Server Components get the real values. See _families.ts.
+export { FAMILY_TOKEN, type Family } from "./_families";
 
 /* ------------------------------------------------------------------ glyphs */
 
@@ -165,18 +168,31 @@ export function Step({
 	title: string;
 	glyph?: Family;
 }) {
+	// The four family sections carry their family's colour; the sections that
+	// frame them stay neutral. That contrast is the point: colour on this page
+	// means "this is one of the four", so spending it on every heading would
+	// say nothing.
+	const token = glyph ? FAMILY_TOKEN[glyph] : null;
+
 	return (
-		<header className="mb-6 border-t border-rule pt-6">
+		<header
+			className={token ? "mb-6 border-t-2 pt-6" : "mb-6 border-t border-rule pt-6"}
+			style={token ? { borderColor: `var(${token})` } : undefined}
+		>
 			<div className="flex items-start gap-4">
 				<span
 					aria-hidden
-					className="mt-0.5 select-none font-sans text-3xl leading-none tabular-nums text-rule"
+					className="mt-0.5 select-none font-sans text-3xl leading-none tabular-nums"
+					style={{ color: token ? `var(${token})` : undefined, opacity: token ? 0.45 : 1 }}
 				>
-					{String(n).padStart(2, "0")}
+					<span className={token ? "" : "text-rule"}>{String(n).padStart(2, "0")}</span>
 				</span>
 				<div className="min-w-0 flex-1">
-					<p className="font-sans text-[10px] uppercase tracking-[0.22em] text-muted">
-						{eyebrow}
+					<p
+						className="font-sans text-[10px] uppercase tracking-[0.22em]"
+						style={{ color: token ? `var(${token})` : undefined }}
+					>
+						<span className={token ? "" : "text-muted"}>{eyebrow}</span>
 					</p>
 					<h3 id={id} className="mt-1.5 scroll-mt-8 text-2xl leading-snug md:text-[1.75rem]">
 						{title}
@@ -199,16 +215,23 @@ export function Step({
  * the first thing under each family heading: the rest of the section is only
  * an elaboration of this one line.
  */
-export function Asks({ children }: { children: ReactNode }) {
+export function Asks({ children, family }: { children: ReactNode; family?: Family }) {
+	const accent = family ? `var(${FAMILY_TOKEN[family]})` : SERIES_COLOR.result;
 	return (
-		<div className="my-6 flex gap-3 rounded-sm bg-foreground/[0.04] p-4">
+		<div
+			className="my-6 flex gap-3 rounded-sm p-4"
+			style={{ background: `color-mix(in oklab, ${accent} 7%, transparent)` }}
+		>
 			<span
 				aria-hidden
 				className="mt-1 h-full w-[2px] shrink-0 rounded-full"
-				style={{ background: SERIES_COLOR.result }}
+				style={{ background: accent }}
 			/>
 			<div>
-				<p className="font-sans text-[10px] uppercase tracking-[0.2em] text-muted">
+				<p
+					className="font-sans text-[10px] uppercase tracking-[0.2em]"
+					style={{ color: accent }}
+				>
 					The question it asks
 				</p>
 				<p className="mt-1.5 font-serif text-lg leading-snug text-foreground">{children}</p>
@@ -218,13 +241,17 @@ export function Asks({ children }: { children: ReactNode }) {
 }
 
 /** One-sentence takeaway, closing a section. */
-export function KeyIdea({ children }: { children: ReactNode }) {
+export function KeyIdea({ children, family }: { children: ReactNode; family?: Family }) {
+	const accent = family ? `var(${FAMILY_TOKEN[family]})` : SERIES_COLOR.result;
 	return (
 		<p
 			className="my-6 border-l-2 pl-4 font-serif text-lg leading-relaxed text-foreground"
-			style={{ borderColor: SERIES_COLOR.result }}
+			style={{ borderColor: accent }}
 		>
-			<span className="font-sans text-[10px] uppercase tracking-[0.2em] text-muted">
+			<span
+				className="font-sans text-[10px] uppercase tracking-[0.2em]"
+				style={{ color: accent }}
+			>
 				In one sentence
 			</span>
 			<br />
@@ -235,10 +262,16 @@ export function KeyIdea({ children }: { children: ReactNode }) {
 
 /** What this family cannot see. Paired with `Asks`, it keeps the page honest:
  *  every instrument here has a blind spot, and naming it is most of the lesson. */
-export function BlindSpot({ children }: { children: ReactNode }) {
+export function BlindSpot({ children, family }: { children: ReactNode; family?: Family }) {
+	const accent = family ? `var(${FAMILY_TOKEN[family]})` : undefined;
 	return (
 		<p className="my-6 font-sans text-sm leading-relaxed text-muted">
-			<span className="uppercase tracking-[0.16em] text-foreground/70">Blind to · </span>
+			<span
+				className="uppercase tracking-[0.16em]"
+				style={accent ? { color: accent } : undefined}
+			>
+				<span className={accent ? "" : "text-foreground/70"}>Blind to · </span>
+			</span>
 			{children}
 		</p>
 	);
@@ -300,11 +333,13 @@ export function FourQuestions() {
 					<li key={f.family}>
 						<a
 							href={f.href}
-							className="group flex items-start gap-4 px-4 py-4 transition-colors hover:bg-foreground/[0.03] sm:px-5"
+							className="group flex items-start gap-4 border-l-[3px] px-4 py-4 transition-colors hover:bg-foreground/[0.03] sm:px-5"
+							style={{ borderColor: `var(${FAMILY_TOKEN[f.family]})` }}
 						>
 							<span
 								aria-hidden
-								className="mt-1 w-5 shrink-0 font-sans text-xs tabular-nums text-rule"
+								className="mt-1 w-5 shrink-0 font-sans text-xs tabular-nums"
+								style={{ color: `var(${FAMILY_TOKEN[f.family]})`, opacity: 0.55 }}
 							>
 								{String(i + 3).padStart(2, "0")}
 							</span>
@@ -312,7 +347,10 @@ export function FourQuestions() {
 								<FamilyGlyph family={f.family} size={40} />
 							</span>
 							<span className="min-w-0 flex-1">
-								<span className="block font-sans text-[11px] uppercase tracking-[0.16em] text-foreground">
+								<span
+									className="block font-sans text-[11px] uppercase tracking-[0.16em]"
+									style={{ color: `var(${FAMILY_TOKEN[f.family]})` }}
+								>
 									{f.name}
 								</span>
 								<span className="mt-1 block font-serif text-[15px] leading-snug text-foreground/85">

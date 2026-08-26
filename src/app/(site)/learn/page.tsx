@@ -14,6 +14,10 @@ import {
 	BlindSpot,
 	FourQuestions,
 } from "@/components/demos/_didactic";
+// Imported from the directive-free module, not from _didactic: a Server
+// Component reading a plain value out of a "use client" module gets a client
+// reference back, and the lookups come out `undefined`.
+import { FAMILY_TOKEN, type Family } from "@/components/demos/_families";
 
 export const metadata: Metadata = {
 	title: "Learn · Attuning to Nature",
@@ -21,8 +25,14 @@ export const metadata: Metadata = {
 		"The fundamental principles behind measuring whether two things are coupled: choosing an observable, the four families of coupling, and how to tell a real relationship from an accident.",
 };
 
-/** Grouped so the nav shows the argument's shape, not just a list of nine. */
-const PARTS = [
+/** Grouped so the nav shows the argument's shape, not just a list of nine.
+ *  The four entries in part two carry a family, so the contents block is
+ *  already teaching the colour code before the reader meets a single figure. */
+const PARTS: {
+	label: string;
+	title: string;
+	sections: { id: string; label: string; family?: Family }[];
+}[] = [
 	{
 		label: "Part one",
 		title: "Setting up",
@@ -35,10 +45,10 @@ const PARTS = [
 		label: "Part two",
 		title: "Four questions",
 		sections: [
-			{ id: "linear", label: "03 · Linear" },
-			{ id: "oscillatory", label: "04 · Oscillatory" },
-			{ id: "information", label: "05 · Information" },
-			{ id: "complexity", label: "06 · Complexity" },
+			{ id: "linear", label: "03 · Linear", family: "linear" },
+			{ id: "oscillatory", label: "04 · Oscillatory", family: "oscillatory" },
+			{ id: "information", label: "05 · Information", family: "information" },
+			{ id: "complexity", label: "06 · Complexity", family: "complexity" },
 		],
 	},
 	{
@@ -85,12 +95,26 @@ export default function LearnPage() {
 							</p>
 							<ul className="mt-2 space-y-1">
 								{p.sections.map((s) => (
-									<li key={s.id}>
+									<li key={s.id} className="flex items-center gap-2">
+										{s.family && (
+											<span
+												aria-hidden
+												className="block h-2 w-2 shrink-0 rounded-full"
+												style={{ background: `var(${FAMILY_TOKEN[s.family]})` }}
+											/>
+										)}
 										<a
 											href={`#${s.id}`}
-											className="font-sans text-[11px] uppercase tracking-[0.12em] text-muted underline-offset-4 transition-colors hover:text-foreground hover:underline"
+											className="font-sans text-[11px] uppercase tracking-[0.12em] underline-offset-4 transition-colors hover:underline"
+											style={
+												s.family
+													? { color: `var(${FAMILY_TOKEN[s.family]})` }
+													: undefined
+											}
 										>
-											{s.label}
+											<span className={s.family ? "" : "text-muted hover:text-foreground"}>
+												{s.label}
+											</span>
 										</a>
 									</li>
 								))}
@@ -233,7 +257,7 @@ export default function LearnPage() {
 					title="Linear: moving together, in step"
 					glyph="linear"
 				/>
-				<Asks>Do they rise and fall together, allowing for a delay?</Asks>
+				<Asks family="linear">Do they rise and fall together, allowing for a delay?</Asks>
 				<p className="text-lg leading-relaxed text-foreground/85">
 					The simplest question, and the one worth asking first. Its subtlety is the
 					delay: effects take time to travel, so a correlation computed where two
@@ -241,11 +265,11 @@ export default function LearnPage() {
 					past the other and take the peak.
 				</p>
 				<LaggedCrossCorrelation />
-				<BlindSpot>
+				<BlindSpot family="linear">
 					relationships that bend, and anything locked at a constant offset. Both
 					register as roughly zero.
 				</BlindSpot>
-				<KeyIdea>
+				<KeyIdea family="linear">
 					The lag is often worth more than the correlation. A strength is a description;
 					a delay is a claim about mechanism.
 				</KeyIdea>
@@ -260,7 +284,7 @@ export default function LearnPage() {
 					title="Oscillatory: keeping time"
 					glyph="oscillatory"
 				/>
-				<Asks>Is the timing relationship between them stable?</Asks>
+				<Asks family="oscillatory">Is the timing relationship between them stable?</Asks>
 				<p className="text-lg leading-relaxed text-foreground/85">
 					Entrainment is not really about amplitudes agreeing. It is about a{" "}
 					<em>constant</em> relationship in phase, one thing keeping time with another
@@ -274,11 +298,11 @@ export default function LearnPage() {
 					wanders, which is most natural ones, it refuses to see relationships a
 					phase-only measure finds easily.
 				</p>
-				<BlindSpot>
+				<BlindSpot family="oscillatory">
 					relationships with no rhythm to hold on to. Phase is only meaningful for
 					something that oscillates.
 				</BlindSpot>
-				<KeyIdea>
+				<KeyIdea family="oscillatory">
 					Two signals can be perfectly locked and completely uncorrelated at the same
 					time. Choosing the estimator that matches the kind of regularity a signal
 					actually has is not a technicality. It is most of the analysis.
@@ -294,7 +318,7 @@ export default function LearnPage() {
 					title="Information: any dependence at all"
 					glyph="information"
 				/>
-				<Asks>Does knowing one of them reduce your uncertainty about the other?</Asks>
+				<Asks family="information">Does knowing one of them reduce your uncertainty about the other?</Asks>
 				<p className="text-lg leading-relaxed text-foreground/85">
 					A correlation of zero means &ldquo;no <em>linear</em> relationship&rdquo;. It
 					does not mean the two are unrelated, and reading it that way discards every
@@ -302,12 +326,12 @@ export default function LearnPage() {
 					and does not care what shape the answer takes.
 				</p>
 				<NonlinearDependence />
-				<BlindSpot>
+				<BlindSpot family="information">
 					direction and sign. It will tell you the two are bound together, never that
 					more of one meant less of the other. Granger causality and transfer entropy
 					belong to this family and add the direction back.
 				</BlindSpot>
-				<KeyIdea>
+				<KeyIdea family="information">
 					Generality is not free: this measure reports dependence that is not there
 					whenever signals are smooth, which is exactly why the last part of this page
 					exists.
@@ -323,7 +347,7 @@ export default function LearnPage() {
 					title="Complexity: a shared way of varying"
 					glyph="complexity"
 				/>
-				<Asks>Do they vary in the same way, across scales?</Asks>
+				<Asks family="complexity">Do they vary in the same way, across scales?</Asks>
 				<p className="text-lg leading-relaxed text-foreground/85">
 					The strangest family, and the one that best fits what attunement between a
 					body and a place might actually be. Two things can be deeply related without
@@ -332,11 +356,11 @@ export default function LearnPage() {
 					scales relates to variability at coarse ones.
 				</p>
 				<ComplexityMatching />
-				<BlindSpot>
+				<BlindSpot family="complexity">
 					timing, entirely. Two perfectly matched signals need never coincide, and this
 					measure would not notice if they did.
 				</BlindSpot>
-				<KeyIdea>
+				<KeyIdea family="complexity">
 					Attunement need not mean simultaneity. Two people walking together do not
 					synchronise step for step, yet the scaling of their gait variability
 					converges.
