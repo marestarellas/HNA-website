@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 
 // Skeleton container used by every section page until that section is built.
-// Intentionally plain — it's a structural wireframe, not a design proposal.
+// Intentionally plain: it's a structural wireframe, not a design proposal.
 type StubPageProps = {
 	eyebrow: string;
 	title: string;
@@ -38,7 +38,7 @@ export function StubPage({ eyebrow, title, intro, willInclude, children }: StubP
 			)}
 
 			<p className="mt-16 font-sans text-xs uppercase tracking-[0.22em] text-muted">
-				Not yet built — bootstrap skeleton
+				Not yet built · bootstrap skeleton
 			</p>
 		</article>
 	);

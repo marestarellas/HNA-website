@@ -13,7 +13,7 @@ import { pearson, plv, px } from "./_signals";
  * Below a threshold coupling they drift; above it they lock. The instructive
  * part is *how* they lock: the settled phase difference is arcsin(Δω / 2K), so
  * just above threshold they lock a quarter cycle apart. There, phase locking is
- * essentially perfect while the correlation between them sits near zero — which
+ * essentially perfect while the correlation between them sits near zero, which
  * is the entire reason the oscillatory family exists separately from the linear
  * one. Push K higher and the two measures finally agree.
  */
@@ -33,7 +33,7 @@ function cssVar(el: HTMLElement, name: string, fallback: string): string {
  *
  * The reported numbers come from here rather than from the animation loop.
  * Deriving them from `requestAnimationFrame` meant they only updated while
- * frames were being painted — so with `prefers-reduced-motion` the slider moved
+ * frames were being painted, so with `prefers-reduced-motion` the slider moved
  * and nothing changed, and the figure opened on a row of zeros. A fixed-step
  * simulation is also deterministic, so the server and client agree and the
  * readouts hold still instead of jittering at 10 Hz.
@@ -225,17 +225,17 @@ export function PhaseLocking() {
 					/>
 					<Legend
 						items={[
-							{ key: "world", label: "Oscillator 1 — 1.00 Hz" },
-							{ key: "body", label: "Oscillator 2 — 1.35 Hz" },
+							{ key: "world", label: "Oscillator 1 · 1.00 Hz" },
+							{ key: "body", label: "Oscillator 2 · 1.35 Hz" },
 						]}
 					/>
 				</>
 			}
 			caption={
 				<>
-					Raise K slowly. Somewhere near K ≈ 1.1 the two lock — but they lock about a
+					Raise K slowly. Somewhere near K ≈ 1.1 the two lock, but they lock about a
 					quarter cycle apart, and there PLV is near 1 while the correlation hovers
-					around zero. A linear estimator would call that pair uncoupled — and it would
+					around zero. A linear estimator would call that pair uncoupled, and it would
 					be wrong. This is the whole reason the oscillatory family exists apart from
 					the linear one: it asks only whether the phase relationship is{" "}
 					<em>stable</em>, not whether the two rise and fall together.

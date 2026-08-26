@@ -11,7 +11,7 @@
  * mostly the estimator choice (histogram MI rather than the k-NN estimator,
  * no bias correction) rather than the concept.
  *
- * Everything is deterministic — `mulberry32` seeds every random draw — so the
+ * Everything is deterministic: `mulberry32` seeds every random draw, so the
  * server and client render identical signals and a reader can be told "move
  * the slider back and you get the same picture".
  */
@@ -107,7 +107,7 @@ export function fft(re: Float64Array, im: Float64Array, inverse = false): void {
  * (the envelope) and instantaneous phase.
  *
  * This is the operation behind `HNA.modalities.audio.decompose_envelope` and
- * the reason the pipeline analyses envelopes at all — the brain tracks how a
+ * the reason the pipeline analyses envelopes at all, the brain tracks how a
  * sound's loudness swells and fades, not its raw pressure waveform.
  */
 export function hilbert(x: number[]): { envelope: number[]; phase: number[] } {
@@ -143,8 +143,8 @@ export function hilbert(x: number[]): { envelope: number[]; phase: number[] } {
 
 /**
  * Zero-phase band-pass by masking the spectrum: forward FFT, null every bin
- * outside [lo, hi], invert. Crude next to a Butterworth section — the brick-wall
- * edge rings a little — but it introduces no phase shift at all, which matters
+ * outside [lo, hi], invert. Crude next to a Butterworth section, the brick-wall
+ * edge rings a little, but it introduces no phase shift at all, which matters
  * here: these demos show an envelope sitting on top of the wave that produced
  * it, and a filter that slid the signal sideways would quietly teach a lie.
  *
@@ -188,7 +188,7 @@ export function bandpass(x: number[], fs: number, lo: number, hi: number): numbe
  * frequency domain. beta = 0 is white, 1 is pink, 2 is Brownian.
  *
  * The demos use this to *set* a scaling exponent so the DFA below can be shown
- * recovering it — the honest way to demonstrate an estimator is to hand it
+ * recovering it, the honest way to demonstrate an estimator is to hand it
  * data whose answer you already know.
  */
 export function coloredNoise(n: number, beta: number, seed: number): number[] {
@@ -236,8 +236,8 @@ export function zscore(x: number[]): number[] {
 	return x.map((v) => (v - m) / sd);
 }
 
-/** Pearson correlation. The comparison step of the linear family, and — as
- *  `HNA.coupling.complexity` is careful to admit — of the complexity family too. */
+/** Pearson correlation. The comparison step of the linear family and,
+ *  as `HNA.coupling.complexity` is careful to admit, of the complexity family too. */
 export function pearson(a: number[], b: number[]): number {
 	const n = Math.min(a.length, b.length);
 	const ma = mean(a.slice(0, n));
@@ -260,7 +260,7 @@ export function pearson(a: number[], b: number[]): number {
  * Normalized cross-correlation across a range of integer lags.
  * Positive lag means `b` follows `a`.
  *
- * This is the whole linear family in one function — `HNA.coupling.linear`
+ * This is the whole linear family in one function. `HNA.coupling.linear`
  * adds a sliding window on top and reports the peak and its lag per window.
  */
 export function crossCorrelation(
@@ -300,7 +300,7 @@ export function crossCorrelation(
  *
  * `HNA.coupling.information` uses a k-NN (Kraskov-style) estimator and offers a
  * surrogate-corrected "effective MI"; this is the simpler textbook version.
- * Both answer the same question — is there ANY dependence, including the
+ * Both answer the same question: is there ANY dependence, including the
  * non-linear kind a correlation coefficient reports as zero?
  */
 export function mutualInformation(a: number[], b: number[], bins = 12): number {
@@ -343,7 +343,7 @@ export function mutualInformation(a: number[], b: number[], bins = 12): number {
  *
  * The key property, and why the oscillatory family exists separately from the
  * linear one: PLV ignores amplitude entirely. Two signals can be perfectly
- * phase-locked while their correlation is zero — a quarter-cycle offset does
+ * phase-locked while their correlation is zero, a quarter-cycle offset does
  * exactly that.
  */
 export function plv(phaseA: number[], phaseB: number[]): number {
@@ -367,7 +367,7 @@ export function plv(phaseA: number[], phaseB: number[]): number {
  * F(s) against s on log axes gives a straight line whose slope is the scaling
  * exponent alpha: 0.5 for white noise, 1.0 for pink/1-f noise, 1.5 for a random
  * walk. Returns the curve as well as the exponent, because the complexity
- * family compares both — `exponent_matching` on the scalar, `fluctuation_matching`
+ * family compares both: `exponent_matching` on the scalar, `fluctuation_matching`
  * on the whole curve.
  */
 export function dfa(
@@ -452,8 +452,8 @@ export function dfa(
  * time can be correlated against another moving trace, which is the whole basis
  * of the complexity family.
  *
- * Returned at full length — the value for each window is held across the
- * samples it covers — so it plots against the same time axis as the signal it
+ * Returned at full length, the value for each window is held across the
+ * samples it covers, so it plots against the same time axis as the signal it
  * came from.
  */
 export function windowedExponent(
@@ -536,7 +536,7 @@ export function phaseShuffle(x: number[], seed: number): number[] {
  * spec to be correctly rounded, and Node and the browser disagree in the last
  * unit in the last place. Those differences survive into rendered `cx`/`cy`
  * attributes, and React compares server and client markup as strings during
- * hydration — so `14.262075314012815` against `14.26207531401283` is a
+ * hydration, so `14.262075314012815` against `14.26207531401283` is a
  * hydration mismatch, logged as an error and left unpatched. Two decimals of
  * a pixel is far below anything visible and puts both engines on the same
  * string. `toPath` above rounds for the same reason.

@@ -11,7 +11,7 @@ const BINS = 22; // histogram display bins
 
 // Seeds are fixed rather than random, and this pair was checked rather than
 // picked blind. Sweeping twelve seed pairs at zero coupling, eleven land inside
-// their null and one lands outside — which is not a bug, it is the 5% of the
+// their null and one lands outside, which is not a bug, it is the 5% of the
 // time a surrogate test reports a false positive by construction. An earlier
 // default happened to be that one draw, and a demo whose opening state
 // contradicts its own caption teaches the wrong lesson. This pair shows the
@@ -25,7 +25,7 @@ export function SurrogateTest() {
 	const { observed, nullMIs, hist, pctile, z } = useMemo(() => {
 		const a = coloredNoise(N, 1.2, 21);
 		const indep = coloredNoise(N, 1.2, 404);
-		// Mix a shared component into b. At coupling 0 the two are independent —
+		// Mix a shared component into b. At coupling 0 the two are independent,
 		// but both are smooth, which is exactly the condition that inflates MI.
 		const b = zscore(a.map((v, i) => coupling * v + (1 - coupling) * indep[i]));
 
@@ -85,7 +85,7 @@ export function SurrogateTest() {
 					autocorrelation and its smoothness, while destroying any relationship it had
 					to the other signal. Whatever the estimator reports on those is what the
 					shape of the signal manufactures for free. Some measures fold this in
-					directly — subtracting the surrogate mean so the number returned is already
+					directly, subtracting the surrogate mean so the number returned is already
 					dependence <em>above the spectral floor</em>. The same logic scales up: run
 					the test on many pairs at once and you need to correct for having given
 					yourself many chances to be fooled.
@@ -114,7 +114,7 @@ export function SurrogateTest() {
 					);
 				})}
 
-				{/* Observed value — direct-labelled, never colour alone. */}
+				{/* Observed value: direct-labelled, never colour alone. */}
 				<line
 					x1={xOf(observed)}
 					y1={14}
@@ -157,12 +157,12 @@ export function SurrogateTest() {
 					{significant ? (
 						<>
 							The observed value now sits outside the null. Whatever MI the spectrum
-							alone could manufacture, this pair exceeds it — the coupling is doing
+							alone could manufacture, this pair exceeds it, the coupling is doing
 							real work.
 						</>
 					) : (
 						<>
-							Start at zero coupling. The observed MI is plainly greater than zero —
+							Start at zero coupling. The observed MI is plainly greater than zero,
 							and it means nothing. Two smooth, autocorrelated signals produce
 							apparent dependence for free. The surrogate distribution shows exactly
 							how much a signal of this spectrum manufactures on its own, and the

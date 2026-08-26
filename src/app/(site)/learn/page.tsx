@@ -7,6 +7,7 @@ import { NonlinearDependence } from "@/components/demos/NonlinearDependence";
 import { ComplexityMatching } from "@/components/demos/ComplexityMatching";
 import { SurrogateTest } from "@/components/demos/SurrogateTest";
 import {
+	Part,
 	Step,
 	Asks,
 	KeyIdea,
@@ -15,20 +16,40 @@ import {
 } from "@/components/demos/_didactic";
 
 export const metadata: Metadata = {
-	title: "Learn — Attuning to Nature",
+	title: "Learn · Attuning to Nature",
 	description:
 		"The fundamental principles behind measuring whether two things are coupled: choosing an observable, the four families of coupling, and how to tell a real relationship from an accident.",
 };
 
-const SECTIONS = [
-	{ id: "problem", label: "01 · The problem" },
-	{ id: "observable", label: "02 · An observable" },
-	{ id: "linear", label: "03 · Linear" },
-	{ id: "oscillatory", label: "04 · Oscillatory" },
-	{ id: "information", label: "05 · Information" },
-	{ id: "complexity", label: "06 · Complexity" },
-	{ id: "design-space", label: "07 · The whole space" },
-	{ id: "surrogates", label: "08 · Is it real?" },
+/** Grouped so the nav shows the argument's shape, not just a list of nine. */
+const PARTS = [
+	{
+		label: "Part one",
+		title: "Setting up",
+		sections: [
+			{ id: "problem", label: "01 · The problem" },
+			{ id: "observable", label: "02 · An observable" },
+		],
+	},
+	{
+		label: "Part two",
+		title: "Four questions",
+		sections: [
+			{ id: "linear", label: "03 · Linear" },
+			{ id: "oscillatory", label: "04 · Oscillatory" },
+			{ id: "information", label: "05 · Information" },
+			{ id: "complexity", label: "06 · Complexity" },
+		],
+	},
+	{
+		label: "Part three",
+		title: "Making it mean something",
+		sections: [
+			{ id: "design-space", label: "07 · The whole space" },
+			{ id: "surrogates", label: "08 · Is it real?" },
+			{ id: "choosing", label: "09 · Choosing" },
+		],
+	},
 ];
 
 export default function LearnPage() {
@@ -37,38 +58,58 @@ export default function LearnPage() {
 			{/* ---------------------------------------------------------------- lede */}
 			<p className="font-sans text-xs uppercase tracking-[0.22em] text-muted">Section 2</p>
 			<h1 className="mt-3 text-4xl leading-tight md:text-5xl">
-				How to measure an attunement
+				How to measure <em>attunement</em>
 			</h1>
 			<p className="mt-6 text-xl leading-relaxed text-foreground/85">
-				Two things unfold in time — a tide and a breath, a birdsong and a heartbeat, a
-				canopy moving in wind and the eyes moving across it — and you want to know
-				whether they are related.
+				Two things unfold in time. A tide and a breath, a birdsong and a heartbeat, a
+				canopy moving in wind and the eyes moving across it. We want to know whether
+				they are related.
 			</p>
 			<p className="mt-4 text-lg leading-relaxed text-foreground/85">
 				That question sounds simple and is not, because &ldquo;related&rdquo; turns out
-				to mean at least four different things. This page walks through them one at a
-				time. Every figure computes what it claims to — real transforms on real
-				synthetic signals — so you can move a control and watch the answer change
-				rather than take a diagram&rsquo;s word for it.
+				to mean many different things. This page walks through different types one at a
+				time. Every figure allows you to move a control and watch the answer change.
 			</p>
 
-			<nav aria-label="Sections" className="mt-10 border-y border-rule py-4">
-				<ul className="flex flex-wrap gap-x-5 gap-y-2">
-					{SECTIONS.map((s) => (
-						<li key={s.id}>
-							<a
-								href={`#${s.id}`}
-								className="font-sans text-[11px] uppercase tracking-[0.14em] text-muted underline-offset-4 transition-colors hover:text-foreground hover:underline"
-							>
-								{s.label}
-							</a>
-						</li>
+			{/* Grouped contents. Three parts is something a reader can hold; nine
+			    numbered steps in a flat row is a list they have to scan. */}
+			<nav aria-label="Contents" className="mt-10 border-y border-rule py-5">
+				<div className="grid gap-6 sm:grid-cols-3">
+					{PARTS.map((p) => (
+						<div key={p.label}>
+							<p className="font-sans text-[10px] uppercase tracking-[0.2em] text-muted">
+								{p.label}
+							</p>
+							<p className="mt-1 font-serif text-base leading-snug text-foreground">
+								{p.title}
+							</p>
+							<ul className="mt-2 space-y-1">
+								{p.sections.map((s) => (
+									<li key={s.id}>
+										<a
+											href={`#${s.id}`}
+											className="font-sans text-[11px] uppercase tracking-[0.12em] text-muted underline-offset-4 transition-colors hover:text-foreground hover:underline"
+										>
+											{s.label}
+										</a>
+									</li>
+								))}
+							</ul>
+						</div>
 					))}
-				</ul>
+				</div>
 			</nav>
 
+			{/* ===================================================== PART ONE ===== */}
+			<Part
+				n={1}
+				label="Part one"
+				title="Setting up"
+				blurb="Why a single number cannot answer the question, and what a recording has to become before you can compare it with anything else."
+			/>
+
 			{/* ------------------------------------------------------------- 01 problem */}
-			<section className="mt-14">
+			<section>
 				<Step
 					n={1}
 					id="problem"
@@ -77,7 +118,7 @@ export default function LearnPage() {
 				/>
 				<p className="text-lg leading-relaxed text-foreground/85">
 					Put any two recordings side by side and, usually, nothing lines up. Correlate
-					them and you get a number near zero — honest, and useless. Because you asked
+					them and you get a number near zero: honest, and useless. Because you asked
 					whether they rise and fall <em>together</em>, and that is only one of the ways
 					two things can be bound to each other.
 				</p>
@@ -90,7 +131,7 @@ export default function LearnPage() {
 
 				<KeyIdea>
 					Four different relationships, four different instruments. Reaching for the
-					wrong one does not give you a weak answer — it gives you zero, confidently.
+					wrong one does not give you a weak answer. It gives you zero, confidently.
 				</KeyIdea>
 
 				<p className="mt-6 text-lg leading-relaxed text-foreground/85">
@@ -100,7 +141,7 @@ export default function LearnPage() {
 			</section>
 
 			{/* ---------------------------------------------------------- 02 observable */}
-			<section className="mt-14">
+			<section className="mt-16">
 				<Step
 					n={2}
 					id="observable"
@@ -116,17 +157,17 @@ export default function LearnPage() {
 				</p>
 				<p className="mt-4 text-lg leading-relaxed text-foreground/85">
 					So the first move is not a comparison at all. It is a reduction: turn each
-					recording into one slow trace of how much is happening. Do that to two
-					unlike signals and they become the same kind of object, sampled at the same
-					rate — and every method further down this page will work on them without
-					knowing or caring where they came from.
+					recording into one slow trace of how much is happening. Do that to two unlike
+					signals and they become the same kind of object, sampled at the same rate, and
+					every method further down this page will work on them without knowing or
+					caring where they came from.
 				</p>
 				<p className="mt-4 text-lg leading-relaxed text-foreground/85">
 					There are really two choices here, and running them together is the mistake
 					worth avoiding. The first is what each recording must become before it is a
-					trace at all — a sound and an EEG already are one, but an ECG is not, since
-					its information is in <em>when</em> beats arrive rather than how large they
-					are, so it reduces to instantaneous rate.
+					trace at all. A sound and an EEG already are one, but an ECG is not, since its
+					information is in <em>when</em> beats arrive rather than how large they are,
+					so it reduces to instantaneous rate.
 				</p>
 				<p className="mt-4 text-lg leading-relaxed text-foreground/85">
 					The second choice is the one that is easy to miss: having got a trace, you
@@ -137,8 +178,8 @@ export default function LearnPage() {
 					<li className="flex gap-3">
 						<span aria-hidden className="text-muted">·</span>
 						<span>
-							<strong className="font-normal text-foreground">The trace itself</strong>{" "}
-							— nothing extracted.
+							<strong className="font-normal text-foreground">The trace itself</strong>,
+							with nothing extracted.
 						</span>
 					</li>
 					<li className="flex gap-3">
@@ -146,43 +187,50 @@ export default function LearnPage() {
 						<span>
 							<strong className="font-normal text-foreground">
 								A frequency component over time
-							</strong>{" "}
-							— how much energy sits in one band, moment to moment. Band-pass, then
-							take the envelope.
+							</strong>
+							: how much energy sits in one band, moment to moment. Band-pass, then take
+							the envelope.
 						</span>
 					</li>
 					<li className="flex gap-3">
 						<span aria-hidden className="text-muted">·</span>
 						<span>
-							<strong className="font-normal text-foreground">Complexity over time</strong>{" "}
-							— the scaling exponent recomputed in a sliding window, so that
-							&ldquo;how irregular is this&rdquo; becomes a series rather than a single
-							number.
+							<strong className="font-normal text-foreground">Complexity over time</strong>
+							: the scaling exponent recomputed in a sliding window, so that &ldquo;how
+							irregular is this&rdquo; becomes a series rather than a single number.
 						</span>
 					</li>
 				</ul>
 				<p className="mt-4 text-lg leading-relaxed text-foreground/85">
 					Every one of those comes out the same shape: one value per moment. That is
-					precisely why any of them can be handed to any method further down this
-					page — and it is the vertical axis of the grid in step 07.
+					precisely why any of them can be handed to any method further down this page,
+					and it is the vertical axis of the grid in step 07.
 				</p>
 				<ChoosingAnObservable />
 
 				<KeyIdea>
-					Choosing the observable is a modelling decision, not a preprocessing step.
-					It encodes what you think matters about the signal — and applying the same
+					Choosing the observable is a modelling decision, not a preprocessing step. It
+					encodes what you think matters about the signal, and applying the same
 					transform to everything because it worked once is the fastest way to measure
 					something real about a quantity nobody cares about.
 				</KeyIdea>
 			</section>
 
+			{/* ===================================================== PART TWO ===== */}
+			<Part
+				n={2}
+				label="Part two"
+				title="Four questions"
+				blurb="Each family asks something different, and each is blind to something the others catch. Move the controls: every number here is computed, not illustrated."
+			/>
+
 			{/* ------------------------------------------------------------- 03 linear */}
-			<section className="mt-14">
+			<section>
 				<Step
 					n={3}
 					id="linear"
 					eyebrow="Family one"
-					title="Linear — moving together, in step"
+					title="Linear: moving together, in step"
 					glyph="linear"
 				/>
 				<Asks>Do they rise and fall together, allowing for a delay?</Asks>
@@ -194,36 +242,36 @@ export default function LearnPage() {
 				</p>
 				<LaggedCrossCorrelation />
 				<BlindSpot>
-					relationships that bend, and anything locked at a constant offset — both
+					relationships that bend, and anything locked at a constant offset. Both
 					register as roughly zero.
 				</BlindSpot>
 				<KeyIdea>
-					The lag is often worth more than the correlation. A strength is a
-					description; a delay is a claim about mechanism.
+					The lag is often worth more than the correlation. A strength is a description;
+					a delay is a claim about mechanism.
 				</KeyIdea>
 			</section>
 
 			{/* -------------------------------------------------------- 04 oscillatory */}
-			<section className="mt-14">
+			<section className="mt-16">
 				<Step
 					n={4}
 					id="oscillatory"
 					eyebrow="Family two"
-					title="Oscillatory — keeping time"
+					title="Oscillatory: keeping time"
 					glyph="oscillatory"
 				/>
 				<Asks>Is the timing relationship between them stable?</Asks>
 				<p className="text-lg leading-relaxed text-foreground/85">
 					Entrainment is not really about amplitudes agreeing. It is about a{" "}
-					<em>constant</em> relationship in phase — one thing keeping time with another,
+					<em>constant</em> relationship in phase, one thing keeping time with another
 					whatever the offset between them happens to be. Phase-locking value asks that
 					and nothing else: is the gap the same now as it was a moment ago?
 				</p>
 				<PhaseLocking />
 				<p className="mt-1 text-lg leading-relaxed text-foreground/85">
 					Coherence asks a stricter version, requiring phase <em>and</em> amplitude to
-					agree together. That strictness has a real cost: on signals whose loudness
-					wanders — which is most natural ones — it refuses to see relationships a
+					agree together. That strictness has a real cost. On signals whose loudness
+					wanders, which is most natural ones, it refuses to see relationships a
 					phase-only measure finds easily.
 				</p>
 				<BlindSpot>
@@ -233,17 +281,17 @@ export default function LearnPage() {
 				<KeyIdea>
 					Two signals can be perfectly locked and completely uncorrelated at the same
 					time. Choosing the estimator that matches the kind of regularity a signal
-					actually has is not a technicality — it is most of the analysis.
+					actually has is not a technicality. It is most of the analysis.
 				</KeyIdea>
 			</section>
 
 			{/* -------------------------------------------------------- 05 information */}
-			<section className="mt-14">
+			<section className="mt-16">
 				<Step
 					n={5}
 					id="information"
 					eyebrow="Family three"
-					title="Information — any dependence at all"
+					title="Information: any dependence at all"
 					glyph="information"
 				/>
 				<Asks>Does knowing one of them reduce your uncertainty about the other?</Asks>
@@ -261,17 +309,18 @@ export default function LearnPage() {
 				</BlindSpot>
 				<KeyIdea>
 					Generality is not free: this measure reports dependence that is not there
-					whenever signals are smooth — which is exactly why the last section exists.
+					whenever signals are smooth, which is exactly why the last part of this page
+					exists.
 				</KeyIdea>
 			</section>
 
 			{/* --------------------------------------------------------- 06 complexity */}
-			<section className="mt-14">
+			<section className="mt-16">
 				<Step
 					n={6}
 					id="complexity"
 					eyebrow="Family four"
-					title="Complexity — a shared way of varying"
+					title="Complexity: a shared way of varying"
 					glyph="complexity"
 				/>
 				<Asks>Do they vary in the same way, across scales?</Asks>
@@ -279,7 +328,7 @@ export default function LearnPage() {
 					The strangest family, and the one that best fits what attunement between a
 					body and a place might actually be. Two things can be deeply related without
 					ever lining up in time. What they share instead is the{" "}
-					<em>statistical structure</em> of their fluctuations — how variability at fine
+					<em>statistical structure</em> of their fluctuations: how variability at fine
 					scales relates to variability at coarse ones.
 				</p>
 				<ComplexityMatching />
@@ -294,8 +343,16 @@ export default function LearnPage() {
 				</KeyIdea>
 			</section>
 
+			{/* =================================================== PART THREE ===== */}
+			<Part
+				n={3}
+				label="Part three"
+				title="Making it mean something"
+				blurb="How the four fit together, why every coupling number needs a null before it counts as a result, and what follows from all of it."
+			/>
+
 			{/* -------------------------------------------------------- 07 design space */}
-			<section className="mt-14">
+			<section>
 				<Step
 					n={7}
 					id="design-space"
@@ -304,30 +361,30 @@ export default function LearnPage() {
 				/>
 				<p className="text-lg leading-relaxed text-foreground/85">
 					Now that the four questions are familiar, the rest of the field collapses into
-					something small. Every coupling method is a choice of <em>what to compare</em>{" "}
-					— the three features from step 02 — crossed with one of the four ways of
+					something small. Every coupling method is a choice of <em>what to compare</em>,
+					meaning the three features from step 02, crossed with one of the four ways of
 					comparing it. Twelve cells, and every one of them is occupied.
 				</p>
 				<p className="mt-4 text-lg leading-relaxed text-foreground/85">
-					The faded cells are the interesting ones. They do not mean &ldquo;impossible&rdquo;;
-					they mean &ldquo;nobody does this, and here is why&rdquo;. Oscillatory coupling
-					on a raw trace is faded not because it fails but because it cannot happen —
-					phase has to be extracted first, so any method that appears to do it is quietly
-					taking the feature step for you.
+					The faded cells are the interesting ones. They do not mean
+					&ldquo;impossible&rdquo;; they mean &ldquo;nobody does this, and here is
+					why&rdquo;. Oscillatory coupling on a raw trace is faded not because it fails
+					but because it cannot happen: phase has to be extracted first, so any method
+					that appears to do it is quietly taking the feature step for you.
 				</p>
 				<CouplingDesignSpace />
 
 				<KeyIdea>
-					Two names dissolve here. Phase–amplitude coupling is not a separate kind of
-					thing — it is oscillatory coupling between two oscillatory features. And the
+					Two names dissolve here. Phase-amplitude coupling is not a separate kind of
+					thing; it is oscillatory coupling between two oscillatory features. And the
 					familiar &ldquo;complexity&rdquo; methods are a Pearson correlation wearing a
-					complexity feature; the genuinely scale-aware bivariate measures are a
-					different cell entirely.
+					complexity feature, while the genuinely scale-aware bivariate measures sit in
+					a different cell entirely.
 				</KeyIdea>
 			</section>
 
 			{/* ---------------------------------------------------------- 08 surrogates */}
-			<section className="mt-14">
+			<section className="mt-16">
 				<Step
 					n={8}
 					id="surrogates"
@@ -343,9 +400,9 @@ export default function LearnPage() {
 					samples.
 				</p>
 				<p className="mt-4 text-lg leading-relaxed text-foreground/85">
-					The defence is to build a null on purpose: destroy the relationship while
-					keeping everything else — same spectrum, same autocorrelation, same
-					distribution — measure again, and repeat until you know the shape of nothing.
+					The defence is to build a null on purpose. Destroy the relationship while
+					keeping everything else intact: same spectrum, same autocorrelation, same
+					distribution. Measure again, and repeat until you know the shape of nothing.
 					Then ask where your real number falls in it.
 				</p>
 				<SurrogateTest />
@@ -355,8 +412,8 @@ export default function LearnPage() {
 				</KeyIdea>
 			</section>
 
-			{/* ------------------------------------------------------------- closing */}
-			<section className="mt-14">
+			{/* ------------------------------------------------------------- 09 closing */}
+			<section className="mt-16">
 				<Step
 					n={9}
 					id="choosing"
@@ -368,32 +425,31 @@ export default function LearnPage() {
 					The four demos above show why that instinct fails. Build a pair coupled purely
 					in phase and the linear measure reports nothing. Build a pair coupled through
 					a fold and the phase measure reports nothing. Match two signals in scaling
-					alone and every timing-based measure returns zero — correctly, because there
-					is no timing relationship to find.
+					alone and every timing-based measure returns zero, correctly, because there is
+					no timing relationship to find.
 				</p>
 				<KeyIdea>
 					The real work happens before any estimator runs: deciding what kind of
-					relationship you think is there, and therefore what would count as evidence.
-					A method chosen after seeing the data is not a measurement — it is a
-					preference.
+					relationship you think is there, and therefore what would count as evidence. A
+					method chosen after seeing the data is not a measurement. It is a preference.
 				</KeyIdea>
 				<p className="mt-6 text-lg leading-relaxed text-foreground/85">
 					That is also the honest reason to show four rather than name a favourite.
 					Attunement between a living thing and its surroundings almost certainly is not
 					one phenomenon. A body may track a rhythm in one respect, ignore it in
-					another, and share a texture with it in a third — at once, and all of it real.
+					another, and share a texture with it in a third, at once, and all of it real.
 				</p>
 			</section>
 
-			<section className="mt-16 border-t border-rule pt-8">
+			<section className="mt-20 border-t border-rule pt-8">
 				<p className="font-sans text-xs leading-relaxed text-muted">
-					The figures on this page are working miniatures — genuine FFTs, genuine
-					detrended fluctuation analysis, genuine surrogate distributions — deliberately
-					simpler in their estimator choices than a research implementation would be,
-					and each caption says where it simplifies. Still to be written: cross-frequency
-					phase–amplitude coupling in its own right, how these measures behave on signals
-					that are not stationary, and what changes when you have many channels rather
-					than two.
+					The figures on this page are working miniatures, running genuine FFTs, genuine
+					detrended fluctuation analysis and genuine surrogate distributions. They are
+					deliberately simpler in their estimator choices than a research implementation
+					would be, and each caption says where it simplifies. Still to be written:
+					cross-frequency phase-amplitude coupling in its own right, how these measures
+					behave on signals that are not stationary, and what changes when you have many
+					channels rather than two.
 				</p>
 			</section>
 		</article>

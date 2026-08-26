@@ -5,7 +5,7 @@ import { Figure, Legend, Slider, Readout, Baseline, SERIES_COLOR } from "./_ui";
 import { coloredNoise, crossCorrelation, toPath, pearson, mulberry32, gaussian, zscore, px } from "./_signals";
 
 const N = 512;
-const FS = 64; // samples per second — 8 s of signal
+const FS = 64; // samples per second, 8 s of signal
 const MAX_LAG = 64; // ±1 s
 const W = 720;
 const H_SIG = 110;
@@ -66,7 +66,7 @@ export function LaggedCrossCorrelation() {
 					<Legend
 						items={[
 							{ key: "world", label: "Environment" },
-							{ key: "body", label: "Body — the same signal, delayed and noised" },
+							{ key: "body", label: "Body, the same signal, delayed and noised" },
 							{ key: "result", label: "Correlation at each lag" },
 						]}
 					/>
@@ -76,7 +76,7 @@ export function LaggedCrossCorrelation() {
 				<>
 					Correlating two traces where they happen to sit answers the wrong question,
 					because effects take time to arrive. Sweeping the lag and taking the peak is
-					what a windowed cross-correlation reports — one peak and one lag per window,
+					what a windowed cross-correlation reports: one peak and one lag per window,
 					so that both can drift as conditions change. Notice that the recovered delay
 					stays right even as noise buries the correlation: the lag survives long
 					after the strength has gone.
@@ -113,7 +113,7 @@ export function LaggedCrossCorrelation() {
 					className="text-rule"
 				/>
 				<path d={toPath(xc.r, W, H_XC, -1, 1)} fill="none" stroke={SERIES_COLOR.result} strokeWidth={2} />
-				{/* peak marker — direct label rather than colour alone */}
+				{/* peak marker: direct label rather than colour alone */}
 				<line
 					x1={peakX}
 					y1={0}

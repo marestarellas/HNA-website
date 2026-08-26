@@ -46,7 +46,7 @@ export function Figure({
 	);
 }
 
-/** Legend. Always rendered when a figure shows more than one series — identity
+/** Legend. Always rendered when a figure shows more than one series, because identity
  *  must never rest on colour alone. */
 export function Legend({
 	items,

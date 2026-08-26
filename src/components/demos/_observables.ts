@@ -5,12 +5,12 @@
  * Two independent choices are being modelled here, and keeping them separate is
  * the point:
  *
- *   1. WHICH SIGNAL — sound, EEG, ECG. Each arrives in a different form and
+ *   1. WHICH SIGNAL: sound, EEG, ECG. Each arrives in a different form and
  *      needs a different first move to become a one-dimensional trace at all.
  *      A sound is already one; an EEG is too; an ECG is not, because its
  *      information is in beat *timing*, so it reduces to instantaneous rate.
  *
- *   2. WHICH FEATURE — and this is the axis that is easy to miss. Having got a
+ *   2. WHICH FEATURE, and this is the axis that is easy to miss. Having got a
  *      trace, you still choose what about it to compare: the trace itself, the
  *      power in one band as it rises and falls, or how its scaling structure
  *      changes over time. These are the three feature rows of the design-space
@@ -53,7 +53,7 @@ export type Recording = {
  *  this is the cheap equivalent.
  *
  *  Mind the window length. A moving average of duration T is a sinc filter with
- *  its first null at 1/T, so it does not merely soften an envelope — it can
+ *  its first null at 1/T, so it does not merely soften an envelope, it can
  *  erase a modulation faster than that outright. An earlier version smoothed a
  *  sound envelope over 0.32 s while offering a swell-rate control that went to
  *  4 Hz, so the top of that control quietly measured nothing. Keep 1/T
@@ -104,7 +104,7 @@ export function recordEeg(burst: number): Recording {
 }
 
 /**
- * Beats whose spacing is modulated by breathing — respiratory sinus arrhythmia.
+ * Beats whose spacing is modulated by breathing: respiratory sinus arrhythmia.
  * The rhythm lives entirely in the timing: invisible in the trace's amplitude,
  * obvious the moment you plot instantaneous rate.
  */
@@ -169,12 +169,12 @@ export function record(kind: Kind, control: number): Recording {
 
 /** The band each signal's oscillatory feature is taken from, and why. */
 export const BAND: Record<Kind, { lo: number; hi: number; name: string }> = {
-	// Broad, because a wave-break has no carrier frequency worth naming — the
+	// Broad, because a wave-break has no carrier frequency worth naming, so the
 	// power in almost any slice of it rises and falls with the swell.
 	sound: { lo: 20, hi: 60, name: "20–60 Hz" },
 	// Alpha. The rhythm that actually bursts in the trace above.
 	eeg: { lo: 8, hi: 12, name: "8–12 Hz alpha" },
-	// The high-frequency HRV band — this is literally where respiratory sinus
+	// The high-frequency HRV band, this is literally where respiratory sinus
 	// arrhythmia is measured in the clinical literature.
 	ecg: { lo: 0.15, hi: 0.45, name: "0.15–0.45 Hz (HF / respiratory)" },
 };
@@ -182,7 +182,7 @@ export const BAND: Record<Kind, { lo: number; hi: number; name: string }> = {
 /**
  * Derive one of the three comparable time series from a recording's base trace.
  *
- * All three come out the same shape — one value per sample — which is exactly
+ * All three come out the same shape, one value per sample, which is exactly
  * why any of them can be fed to any coupling method. That interchangeability is
  * the lesson.
  */

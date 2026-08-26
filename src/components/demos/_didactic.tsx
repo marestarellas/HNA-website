@@ -12,8 +12,8 @@ import { SERIES_COLOR } from "./_ui";
  * repeat. These components carry that structure so the prose does not have to.
  *
  * Colour discipline: this introduces no new hues. The glyphs below are drawn
- * with the same three signal colours used inside every figure — amber for the
- * environment, blue for the body, magenta for a derived measure — so that a
+ * with the same three signal colours used inside every figure (amber for the
+ * environment, blue for the body, magenta for a derived measure), so that a
  * reader who learns the mapping once keeps reading it correctly in the chrome
  * as well as in the data.
  */
@@ -102,9 +102,55 @@ export function FamilyGlyph({ family, size = 46 }: { family: Family; size?: numb
 	);
 }
 
+/* ------------------------------------------------------------ part divider */
+
+/**
+ * A movement break. Nine numbered steps in a row read as a list; grouped into
+ * three parts they read as an argument with a beginning, a middle and a
+ * consequence, and a reader can hold three things in mind where they cannot
+ * hold nine.
+ *
+ * Deliberately the loudest element on the page. It is the only place where the
+ * eye is meant to stop completely, so it gets the full measure of space and a
+ * numeral large enough to read as punctuation rather than as text.
+ */
+export function Part({
+	n,
+	label,
+	title,
+	blurb,
+}: {
+	n: number;
+	label: string;
+	title: string;
+	blurb: string;
+}) {
+	return (
+		<header className="mt-24 mb-12 border-t-2 border-foreground pt-6 first:mt-0">
+			<div className="flex items-start gap-5">
+				<span
+					aria-hidden
+					className="select-none font-serif text-[3.25rem] leading-[0.8] tabular-nums text-foreground/12"
+				>
+					{n}
+				</span>
+				<div className="min-w-0 flex-1">
+					<p className="font-sans text-[10px] uppercase tracking-[0.28em] text-muted">
+						{label}
+					</p>
+					<h2 className="mt-2 text-[1.75rem] leading-tight md:text-4xl">{title}</h2>
+					<p className="mt-3 max-w-xl font-sans text-sm leading-relaxed text-muted">
+						{blurb}
+					</p>
+				</div>
+			</div>
+		</header>
+	);
+}
+
 /* ------------------------------------------------------------ step heading */
 
-/** Numbered section heading. The numeral gives the page a sense of travel — a
+/** Numbered section heading. The numeral gives the page a sense of travel, so a
  *  reader can tell how far in they are without a progress bar. */
 export function Step({
 	n,
@@ -132,9 +178,9 @@ export function Step({
 					<p className="font-sans text-[10px] uppercase tracking-[0.22em] text-muted">
 						{eyebrow}
 					</p>
-					<h2 id={id} className="mt-1.5 scroll-mt-8 text-2xl leading-snug md:text-[1.75rem]">
+					<h3 id={id} className="mt-1.5 scroll-mt-8 text-2xl leading-snug md:text-[1.75rem]">
 						{title}
-					</h2>
+					</h3>
 				</div>
 				{glyph && (
 					<div className="hidden pt-1 sm:block">
@@ -187,7 +233,7 @@ export function KeyIdea({ children }: { children: ReactNode }) {
 	);
 }
 
-/** What this family cannot see. Paired with `Asks`, it keeps the page honest —
+/** What this family cannot see. Paired with `Asks`, it keeps the page honest:
  *  every instrument here has a blind spot, and naming it is most of the lesson. */
 export function BlindSpot({ children }: { children: ReactNode }) {
 	return (
@@ -225,7 +271,7 @@ const FAMILIES: {
 		family: "information",
 		name: "Information",
 		asks: "Does knowing one reduce uncertainty about the other?",
-		misses: "Direction and sign — it cannot say which way, or more-or-less.",
+		misses: "Direction and sign. It cannot say which way, or more-or-less.",
 		href: "#information",
 	},
 	{

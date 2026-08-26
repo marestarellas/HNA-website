@@ -13,7 +13,7 @@ const SECTIONS = [
 		eyebrow: "Section 3",
 		title: "Stories, Myths, and People (and Animals) of the Land",
 		blurb:
-			"A world map of stories shared by visitors — personal experiences and inherited folklore of places, organisms, elements, and times. The heart of the site.",
+			"A world map of stories shared by visitors: personal experiences and inherited folklore of places, organisms, elements, and times. The heart of the site.",
 	},
 	{
 		href: "/experiment",
@@ -27,7 +27,7 @@ const SECTIONS = [
 		eyebrow: "Section 1",
 		title: "Science",
 		blurb:
-			"The empirical study behind the project — methods, figures, what we are finding. Honest about being in progress.",
+			"The empirical study behind the project: methods, figures, what we are finding. Honest about being in progress.",
 	},
 ];
 
@@ -76,7 +76,7 @@ export default function Home() {
 			</section>
 
 			<p className="mt-16 font-sans text-xs uppercase tracking-[0.22em] text-muted">
-				Bootstrap skeleton — design direction not yet chosen
+				Bootstrap skeleton · design direction not yet chosen
 			</p>
 		</main>
 	);

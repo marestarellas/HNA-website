@@ -78,8 +78,8 @@ export function ComplexityMatching() {
 			}
 			caption={
 				<>
-					Set both sliders to the same value. The two traces still look nothing alike
-					— they share no samples — and their correlation stays near zero, yet their
+					Set both sliders to the same value. The two traces still look nothing alike:
+					they share no samples, and their correlation stays near zero, yet their
 					fluctuation curves lie almost on top of each other and the matching score
 					goes to 1. That is the whole idea:{" "}
 					<em>
@@ -138,14 +138,14 @@ export function ComplexityMatching() {
 						]}
 					/>
 					<p className="mt-4 font-serif text-[15px] leading-relaxed text-foreground/85">
-						The slope of each line <em>is</em> the exponent — 0.5 for white noise,
+						The slope of each line <em>is</em> the exponent: 0.5 for white noise,
 						1.0 for pink, 1.5 for a random walk. The matching score is simply{" "}
 						<code className="text-foreground">1 − |α₁ − α₂| / α_max</code>. Note what
 						the comparison step actually is: a difference between two numbers. In this
 						method the complexity lives entirely in the <em>feature</em>, not in the
-						operation — worth knowing before the family name convinces you otherwise.
-						Measures whose <em>coupling step</em> is itself scale-aware do exist —
-						detrended cross-correlation analysis and cross-sample entropy — and they
+						operation. Worth knowing before the family name convinces you otherwise.
+						Measures whose <em>coupling step</em> is itself scale-aware do exist
+						(detrended cross-correlation analysis, cross-sample entropy), and they
 						occupy their own cell in the grid two sections down.
 					</p>
 				</div>

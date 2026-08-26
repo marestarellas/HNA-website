@@ -20,7 +20,7 @@ const SHAPES: { id: Shape; label: string; blurb: string }[] = [
 		id: "quadratic",
 		label: "Quadratic",
 		blurb:
-			"Knowing x tells you a great deal about y — but the relationship folds back on itself, so the positive and negative halves cancel and Pearson r collapses to nearly zero. Mutual information does not care about direction or shape; it only asks whether knowing one reduces uncertainty about the other.",
+			"Knowing x tells you a great deal about y, but the relationship folds back on itself, so the positive and negative halves cancel and Pearson r collapses to nearly zero. Mutual information does not care about direction or shape; it only asks whether knowing one reduces uncertainty about the other.",
 	},
 	{
 		id: "ring",
@@ -32,7 +32,7 @@ const SHAPES: { id: Shape; label: string; blurb: string }[] = [
 		id: "independent",
 		label: "Independent",
 		blurb:
-			"No relationship at all. Note that MI does not read exactly zero — a histogram estimator on finite data always reports a little dependence that is not there. That floor is precisely why a raw MI value means nothing on its own, and why the next section exists.",
+			"No relationship at all. Note that MI does not read exactly zero, a histogram estimator on finite data always reports a little dependence that is not there. That floor is precisely why a raw MI value means nothing on its own, and why the next section exists.",
 	},
 ];
 
@@ -108,7 +108,7 @@ export function NonlinearDependence() {
 				<>
 					Research implementations generally reach for a k-nearest-neighbour estimator,
 					and a bias-corrected <em>effective</em> MI, rather than the histogram used
-					here — but the question is identical: is there <em>any</em> dependence, of
+					here, but the question is identical: is there <em>any</em> dependence, of
 					any shape? Granger causality and transfer entropy belong to this same family
 					because they ask that question with a direction attached.
 				</>

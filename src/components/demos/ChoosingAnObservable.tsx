@@ -18,9 +18,9 @@ import {
  * are being made and collapsing them is the misconception this figure exists to
  * prevent:
  *
- *   Which signal  — each modality needs a different first move to become a
+ *   Which signal:  each modality needs a different first move to become a
  *                   one-dimensional trace at all.
- *   Which feature — having got a trace, you still choose what about it to
+ *   Which feature: having got a trace, you still choose what about it to
  *                   compare. These are the feature rows of the design-space
  *                   grid in step 07.
  *
@@ -70,7 +70,7 @@ const SIGNAL_COPY: Record<
 		control: { label: "Burst rate", min: 0.15, max: 1.5, step: 0.05 },
 		firstMove: (
 			<>
-				An EEG is also already one-dimensional — but its overall amplitude means
+				An EEG is also already one-dimensional, but its overall amplitude means
 				little, since several rhythms and a 1/f background are summed into it. Which
 				is why the band matters so much here.
 			</>
@@ -94,22 +94,22 @@ const SIGNAL_COPY: Record<
 const FEATURE_COPY: Record<Feature, (kind: Kind) => ReactNode> = {
 	raw: (kind) => (
 		<>
-			The trace as it stands, with nothing extracted. A perfectly legitimate choice —
+			The trace as it stands, with nothing extracted. A perfectly legitimate choice:
 			the linear and information families are usually applied at exactly this level.
 			{kind === "ecg" && " Here that means the rate series, not the ECG waveform."}
 		</>
 	),
 	band: (kind) => (
 		<>
-			How much energy sits in {BAND[kind].name}, moment to moment — a frequency
+			How much energy sits in {BAND[kind].name}, moment to moment. A frequency
 			component followed over time. Band-pass, then take the envelope. Note what this
 			trace is and is not: it is the <em>strength</em> of that component, not the
 			component itself, so a steady rhythm gives a steady line.{" "}
 			{kind === "ecg" ? (
 				<>
 					This band is where respiratory sinus arrhythmia is measured clinically. Drag
-					the breathing rate below 0.15 Hz or above 0.45 and watch the level collapse
-					— the rhythm has not stopped, it has simply left the window you chose to
+					the breathing rate below 0.15 Hz or above 0.45 and watch the level collapse:
+					the rhythm has not stopped, it has simply left the window you chose to
 					look through. Choosing a band is choosing what you are able to see.
 				</>
 			) : (
@@ -120,7 +120,7 @@ const FEATURE_COPY: Record<Feature, (kind: Kind) => ReactNode> = {
 	complexity: () => (
 		<>
 			The scaling exponent, recomputed in a sliding two-second window. Complexity as
-			a <em>time series</em> rather than one number for the whole recording — which is
+			a <em>time series</em> rather than one number for the whole recording, which is
 			what makes it something you can couple on at all, since a single value per
 			recording has nothing to be correlated against.
 		</>
@@ -133,7 +133,7 @@ const FEATURE_COPY: Record<Feature, (kind: Kind) => ReactNode> = {
  * A component defined in another component's body is a *new component type* on
  * every render, so React tears the old one down and mounts a fresh one each
  * time instead of updating it. Beyond the wasted work, the DOM nodes are
- * replaced on every state change — which silently breaks anything holding a
+ * replaced on every state change, which silently breaks anything holding a
  * reference to them, focus included.
  */
 function Pills<T extends string>({
@@ -265,7 +265,7 @@ export function ChoosingAnObservable() {
 			</svg>
 
 			<p className="mt-4 mb-1 font-sans text-[10px] uppercase tracking-[0.16em] text-muted">
-				What you compare — {FEATURES.find((f) => f.id === which)!.label.toLowerCase()}
+				What you compare · {FEATURES.find((f) => f.id === which)!.label.toLowerCase()}
 				{which !== "raw" && <> of {copy.baseLabel}</>}
 			</p>
 			<svg

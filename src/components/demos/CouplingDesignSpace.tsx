@@ -12,9 +12,9 @@ import { Figure } from "./_ui";
  * the empty-looking cells are the informative ones and it is easy to get them
  * wrong. Three states, and the distinction matters:
  *
- *   named   — a canonical, named method
- *   pattern — a general approach with no special name; perfectly usable
- *   rare    — uncommon or not standard, and the reason why is the lesson
+ *   named:   a canonical, named method
+ *   pattern: a general approach with no special name; perfectly usable
+ *   rare:    uncommon or not standard, and the reason why is the lesson
  *
  * No cell is truly empty. "(rare)" is a statement about practice, not about
  * possibility, and collapsing that into a blank would teach that the
@@ -70,14 +70,14 @@ const GRID: Record<string, Cell[]> = {
 			blurb: "lag-search Pearson on raw samples",
 			kind: "named",
 			detail:
-				"Slide one signal past the other and take the peak. The simplest coupling there is, and the one worth trying before anything else — if it answers your question, nothing further is needed.",
+				"Slide one signal past the other and take the peak. The simplest coupling there is, and the one worth trying before anything else: if it answers your question, nothing further is needed.",
 		},
 		{
 			method: "(feature step needed)",
 			blurb: "PLV / wPLI / coherence imply Hilbert / Welch first",
 			kind: "rare",
 			detail:
-				"Not a gap so much as a mislabel. You cannot do oscillatory coupling on a raw trace without first extracting phase or spectrum — a Hilbert transform or a Welch periodogram. The moment you do, you are working on an oscillatory feature, which is the row below. Methods that appear to act on raw signal are quietly taking that step for you.",
+				"Not a gap so much as a mislabel. You cannot do oscillatory coupling on a raw trace without first extracting phase or spectrum: a Hilbert transform, or a Welch periodogram. The moment you do, you are working on an oscillatory feature, which is the row below. Methods that appear to act on raw signal are quietly taking that step for you.",
 		},
 		{
 			method: "MI, effective MI, Granger, TE, PID, Φ-ID",
@@ -91,7 +91,7 @@ const GRID: Record<string, Cell[]> = {
 			blurb: "scale-resolved bivariate fluctuation / regularity",
 			kind: "named",
 			detail:
-				"Genuinely scale-aware bivariate methods — the coupling step itself is non-linear and resolved across scales, rather than a linear comparison of two separately-computed features. Detrended cross-correlation analysis gives a joint scaling exponent; DCCA-ρ is the per-scale analogue of Pearson r; cross-sample entropy measures the regularity of the joint dynamics.",
+				"Genuinely scale-aware bivariate methods. The coupling step itself is non-linear and resolved across scales, rather than a linear comparison of two separately-computed features. Detrended cross-correlation analysis gives a joint scaling exponent; DCCA-ρ is the per-scale analogue of Pearson r; cross-sample entropy measures the regularity of the joint dynamics.",
 		},
 	],
 	osc: [
@@ -107,7 +107,7 @@ const GRID: Record<string, Cell[]> = {
 			blurb: "same-band phase or slow phase × fast amp",
 			kind: "named",
 			detail:
-				"The heart of the oscillatory family. Phase-locking value and the debiased weighted phase-lag index ask whether the phase relationship is stable; coherence additionally demands amplitude agreement. Phase–amplitude coupling is the cross-frequency case — the phase of a slow rhythm against the amplitude of a fast one — and is oscillatory coupling between two oscillatory features rather than a separate kind of thing.",
+				"The heart of the oscillatory family. Phase-locking value and the debiased weighted phase-lag index ask whether the phase relationship is stable; coherence additionally demands amplitude agreement. Phase-amplitude coupling is the cross-frequency case, the phase of a slow rhythm against the amplitude of a fast one, and is oscillatory coupling between two oscillatory features rather than a separate kind of thing.",
 		},
 		{
 			method: "MI of envelopes / band-power traces",
@@ -121,7 +121,7 @@ const GRID: Record<string, Cell[]> = {
 			blurb: "DCCA on envelopes; rarely standard",
 			kind: "rare",
 			detail:
-				"Perfectly possible — an envelope is a time series like any other, and DCCA will happily consume two of them. It simply is not established practice, so there is little literature to compare against.",
+				"Perfectly possible: an envelope is a time series like any other, and DCCA will happily consume two of them. It simply is not established practice, so there is little literature to compare against.",
 		},
 	],
 	cplx: [
@@ -130,28 +130,28 @@ const GRID: Record<string, Cell[]> = {
 			blurb: "scalar / scale curves / time trace; all = Pearson on the feature",
 			kind: "named",
 			detail:
-				"Worth being precise about: despite the family name, the comparison step here is a plain Pearson r, or an absolute difference between two scalars. The complexity lives entirely in the feature — DFA α, the fluctuation curve, multiscale entropy — not in the operation. That is not a criticism; it is what the methods are. The genuinely scale-aware bivariate methods live in the Complexity column, top-right.",
+				"Worth being precise about: despite the family name, the comparison step here is a plain Pearson r, or an absolute difference between two scalars. The complexity lives entirely in the feature (DFA α, the fluctuation curve, multiscale entropy), not in the operation. That is not a criticism; it is what the methods are. The genuinely scale-aware bivariate methods live in the Complexity column, top-right.",
 		},
 		{
 			method: "(rare)",
 			blurb: "phase-locking on a complexity trace is not standard",
 			kind: "rare",
 			detail:
-				"A windowed scaling exponent is a slow time series, and you could in principle ask whether two of them are phase-locked. Almost nobody does — a complexity trace rarely has a rhythm stable enough for phase to be meaningful.",
+				"A windowed scaling exponent is a slow time series, and you could in principle ask whether two of them are phase-locked. Almost nobody does: a complexity trace rarely has a rhythm stable enough for phase to be meaningful.",
 		},
 		{
 			method: "MI between complexity traces",
 			blurb: "non-linear coupling of scaling / entropy",
 			kind: "pattern",
 			detail:
-				"Slide a window, get a scaling exponent per window for each signal, then ask whether those two traces depend on each other in any way — including non-linearly.",
+				"Slide a window, get a scaling exponent per window for each signal, then ask whether those two traces depend on each other in any way, including non-linearly.",
 		},
 		{
 			method: "(compose)",
-			blurb: "DCCA on complexity traces — exotic",
+			blurb: "DCCA on complexity traces; exotic",
 			kind: "rare",
 			detail:
-				"Reachable by composition: run a scale-aware bivariate method over two complexity traces. Defensible, and very hard to interpret — you are asking about the scaling structure of a scaling structure.",
+				"Reachable by composition: run a scale-aware bivariate method over two complexity traces. Defensible, and very hard to interpret: you are asking about the scaling structure of a scaling structure.",
 		},
 	],
 };
