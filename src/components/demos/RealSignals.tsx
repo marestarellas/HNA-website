@@ -123,7 +123,7 @@ export function RealSignals() {
 
 	return (
 		<Figure
-			label="Measured, not simulated · the pipeline's own output"
+			label="Optical flow, texture and complexity"
 			controls={
 				<>
 					<div className="flex flex-wrap gap-2">
@@ -164,7 +164,7 @@ export function RealSignals() {
 							viewBox={`0 0 ${W} ${H}`}
 							className="w-full"
 							role="img"
-							aria-label={`${r.label}, measured from real footage.`}
+							aria-label={`${r.label} over the clip.`}
 						>
 							<Baseline width={W} y={H - 2} />
 							<path
@@ -181,7 +181,7 @@ export function RealSignals() {
 			<div className="mt-4 flex justify-between font-sans text-[10px] text-muted">
 				<span>0 s</span>
 				<span>
-					real footage · {SHOWCASE_FPS} fps
+					{SHOWCASE_FPS} fps
 				</span>
 				<span>{SHOWCASE_DURATION_S} s</span>
 			</div>
@@ -191,7 +191,7 @@ export function RealSignals() {
 					items={[
 						{ label: "Traces shown", value: String(rows.length), muted: true },
 						{ label: "Frames each", value: String(rows[0]?.data.length ?? 0), muted: true },
-						{ label: "Computed in", value: "Python, offline", muted: true },
+						{ label: "Frame rate", value: `${SHOWCASE_FPS} fps`, muted: true },
 					]}
 				/>
 			</div>

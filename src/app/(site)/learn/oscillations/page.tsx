@@ -136,8 +136,8 @@ export default function OscillationsPage() {
 				<p className="text-lg leading-relaxed text-foreground/85">
 					Synthetic scenes are useful because you know the answer in advance. Real
 					footage is useful because it does not cooperate. Below are three clips of
-					moving water with the measures computed in the browser, frame by frame, as
-					the video plays. Nothing is pre-rendered.
+					moving water, with the measures computed in the browser frame by frame as
+					the video plays.
 				</p>
 				<p className="mt-4 text-lg leading-relaxed text-foreground/85">
 					Switch between the clips with the same view selected and watch the numbers
@@ -153,10 +153,9 @@ export default function OscillationsPage() {
 				</KeyIdea>
 
 				<p className="mt-10 text-lg leading-relaxed text-foreground/85">
-					Doing the work in a browser keeps it honest but keeps it crude. The project
-					has a proper pipeline in Python, with real dense optical flow and real
-					complexity estimators, and the traces below are its output rather than an
-					approximation of it. Same footage, better instruments.
+					Browser arithmetic is necessarily crude. The traces below come from the
+					project&rsquo;s analysis pipeline instead, which uses dense optical flow and
+					proper complexity estimators. Same footage, better instruments.
 				</p>
 				<RealSignals />
 				<KeyIdea>
@@ -255,10 +254,9 @@ export default function OscillationsPage() {
 				</KeyIdea>
 
 				<p className="mt-10 text-lg leading-relaxed text-foreground/85">
-					Those were synthesised, so that the answer could be known in advance. Here
-					are the real ones, decomposed from real footage by the project&rsquo;s
-					pipeline and redrawn as reliefs that oscillate at the frequencies it
-					measured.
+					Those were synthesised, so the answer was known in advance. Below are modes
+					decomposed from footage, drawn as reliefs that oscillate at the frequencies
+					the pipeline found for them.
 				</p>
 				<ModeGallery />
 			</section>
@@ -325,14 +323,13 @@ export default function OscillationsPage() {
 
 			<section className="mt-20 border-t border-rule pt-8">
 				<p className="font-sans text-xs leading-relaxed text-muted">
-					The synthesised figures compute their own answers and were checked against
-					known inputs before being published: the spectral slope recovers the value it
-					was given to within a hundredth, and the timestack recovers a swell frequency
-					to within half a frequency bin even under heavy chop. The footage figures
-					sample frames to a small grid and reduce them in the browser, which is
-					coarser than an offline pipeline would be and shows the same behaviour. Still
-					to be written: optical flow in its own right, per-pixel frequency maps, and
-					what changes when the camera is moving too.
+					Where a figure synthesises a scene it also checks itself: the spectral slope
+					recovers the value it was given to within a hundredth, and the timestack
+					recovers a swell frequency to within half a bin even under heavy chop. The
+					figures that sample video reduce frames on a small grid in the browser, which
+					is coarser than the offline pipeline and behaves the same way. Still to be
+					written: optical flow in its own right, per-pixel frequency maps, and what
+					changes when the camera is moving too.
 				</p>
 			</section>
 		</article>

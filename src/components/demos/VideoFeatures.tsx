@@ -319,7 +319,7 @@ export function VideoFeatures() {
 
 	return (
 		<Figure
-			label="Real footage · every measure computed live from the pixels"
+			label="Wave clips, measured as they play"
 			controls={
 				<>
 					<div className="flex flex-wrap items-center gap-x-3 gap-y-2">
@@ -379,9 +379,9 @@ export function VideoFeatures() {
 			}
 			caption={
 				<>
-					{VIEW_NOTE[view]} {active.note} Nothing here is pre-rendered: the frames are
-					drawn to a small canvas, read back, and reduced in the browser as the clip
-					plays, which is why the traces only advance while it is running.
+					{VIEW_NOTE[view]} {active.note} Frames are drawn to a small canvas, read back
+					and reduced in the browser as the clip plays, which is why the traces only
+					advance while it is running.
 				</>
 			}
 		>
@@ -451,8 +451,7 @@ export function VideoFeatures() {
 				</div>
 			</div>
 
-			{/* The source video. Shown small rather than hidden, so it is obvious the
-			    numbers come from something real. */}
+			{/* Shown rather than hidden, so the source of the numbers is visible. */}
 			<div className="mt-4 border-t border-rule pt-4">
 				<video
 					key={clip}

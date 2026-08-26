@@ -187,7 +187,7 @@ export function ModeGallery() {
 
 	return (
 		<Figure
-			label="Real modes · measured from footage, breathing at their own frequencies"
+			label="Spatial modes, breathing at their own frequencies"
 			controls={
 				<div className="flex flex-wrap items-center gap-x-3 gap-y-2">
 					<span className="w-16 shrink-0 font-sans text-[10px] uppercase tracking-[0.16em] text-muted">
@@ -215,13 +215,12 @@ export function ModeGallery() {
 			}
 			caption={
 				<>
-					These are not illustrations of modes. Each surface is the pipeline&rsquo;s own
-					exported mode image, a greyscale array whose value at every point is that
-					point&rsquo;s weight in the mode, redrawn as a relief and oscillating at the
-					frequency the decomposition measured for it. Compare clips: an ordered sea
-					gives smooth low-frequency modes with long crests, and a broken one gives
-					busier modes at higher frequencies. The energies say how much of the clip
-					each mode accounts for.
+					Each surface is a mode image from the analysis pipeline: a greyscale array
+					whose value at every point is that point&rsquo;s weight in the mode, drawn here
+					as a relief and oscillating at the frequency the decomposition found for it.
+					Compare clips. An ordered sea gives smooth low-frequency modes with long
+					crests; a broken one gives busier modes at higher frequencies. The
+					percentages say how much of the clip each mode accounts for.
 				</>
 			}
 		>
