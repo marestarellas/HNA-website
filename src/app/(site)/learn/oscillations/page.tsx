@@ -4,6 +4,9 @@ import { VideoFeatures } from "@/components/demos/VideoFeatures";
 import { TimestackFigure } from "@/components/demos/TimestackFigure";
 import { SpatialFrequency } from "@/components/demos/SpatialFrequency";
 import { ModalDecomposition } from "@/components/demos/ModalDecomposition";
+import { ModeGallery } from "@/components/demos/ModeGallery";
+import { RealSignals } from "@/components/demos/RealSignals";
+import { FourSeas } from "@/components/demos/FourSeas";
 import { VideoDesignSpace } from "@/components/demos/VideoDesignSpace";
 import { Part, Step, Asks, KeyIdea, BlindSpot } from "@/components/demos/_didactic";
 
@@ -29,12 +32,13 @@ const PARTS = [
 			{ id: "timestack", label: "03 · Timestacks" },
 			{ id: "spectrum", label: "04 · Scale-free structure" },
 			{ id: "modes", label: "05 · Modes" },
+			{ id: "four-seas", label: "06 · Four seas" },
 		],
 	},
 	{
 		label: "Part three",
 		title: "The whole space",
-		sections: [{ id: "matrix", label: "06 · The video matrix" }],
+		sections: [{ id: "matrix", label: "07 · The video matrix" }],
 	},
 ];
 
@@ -147,6 +151,19 @@ export default function OscillationsPage() {
 					distributed and how it changes, and the difference between a swell and a chop
 					falls out of that on its own.
 				</KeyIdea>
+
+				<p className="mt-10 text-lg leading-relaxed text-foreground/85">
+					Doing the work in a browser keeps it honest but keeps it crude. The project
+					has a proper pipeline in Python, with real dense optical flow and real
+					complexity estimators, and the traces below are its output rather than an
+					approximation of it. Same footage, better instruments.
+				</p>
+				<RealSignals />
+				<KeyIdea>
+					Direction entropy is the one to notice. Two clips can carry identical average
+					motion and still be told apart by whether the frame agrees about which way it
+					is going.
+				</KeyIdea>
 			</section>
 
 			{/* ===================================================== PART TWO ===== */}
@@ -236,6 +253,43 @@ export default function OscillationsPage() {
 					Modes arrive in pairs because a standing pattern cannot travel. Reading a
 					decomposition means reading the pairs, not the individual modes.
 				</KeyIdea>
+
+				<p className="mt-10 text-lg leading-relaxed text-foreground/85">
+					Those were synthesised, so that the answer could be known in advance. Here
+					are the real ones, decomposed from real footage by the project&rsquo;s
+					pipeline and redrawn as reliefs that oscillate at the frequencies it
+					measured.
+				</p>
+				<ModeGallery />
+			</section>
+
+			<section className="mt-16">
+				<Step
+					n={6}
+					id="four-seas"
+					eyebrow="Putting it together"
+					title="Four seas, told apart by numbers alone"
+				/>
+				<Asks>
+					Can measures that know nothing about water sort these clips the way a person
+					would?
+				</Asks>
+				<p className="text-lg leading-relaxed text-foreground/85">
+					Four clips of moving water, each run through the whole pipeline. None of
+					these measures has any concept of a wave, a horizon or foam. They report how
+					brightness is arranged, how it moves and how regular that movement is, and
+					that turns out to be enough to separate an ordered swell from a broken sea.
+				</p>
+				<FourSeas />
+				<BlindSpot>
+					meaning. These numbers separate the clips reliably and say nothing whatever
+					about which sea a person would rather sit beside, which is a different
+					question and needs a different instrument.
+				</BlindSpot>
+				<KeyIdea>
+					A measurement that agrees with your eye on cases you can check is a
+					measurement you can begin to trust on cases you cannot.
+				</KeyIdea>
 			</section>
 
 			{/* =================================================== PART THREE ===== */}
@@ -248,7 +302,7 @@ export default function OscillationsPage() {
 
 			<section>
 				<Step
-					n={6}
+					n={7}
 					id="matrix"
 					eyebrow="Zooming out"
 					title="Spatial scale crossed with feature family"
