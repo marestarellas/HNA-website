@@ -3,6 +3,7 @@ import { TopicCard, type TopicStatus } from "@/components/learn/TopicCard";
 import {
 	AttunementMark,
 	OscillationsMark,
+	SpectrumMark,
 	PhenomenologyMark,
 	ConnectednessMark,
 } from "@/components/learn/TopicMarks";
@@ -10,7 +11,7 @@ import {
 export const metadata: Metadata = {
 	title: "Learn · Attuning to Nature",
 	description:
-		"Four ways into the project's ideas: how coupling between a body and its surroundings is measured, how oscillation and structure are quantified in natural images and sounds, how felt experience is turned into data, and what nature connectedness means.",
+		"Five ways into the project's ideas: how coupling between a body and its surroundings is measured, how oscillation and structure are quantified in natural images and sounds, how a spectrum separates rhythm from background, how felt experience is turned into data, and what nature connectedness means.",
 };
 
 const TOPICS: {
@@ -56,7 +57,23 @@ const TOPICS: {
 		mark: <OscillationsMark />,
 	},
 	{
+		href: "/learn/spectrum",
 		eyebrow: "Three",
+		title: "The shape of a spectrum",
+		blurb:
+			"Alpha power went up. Something happened, and that sentence does not say what. A spectrum holds a rhythm and a background at once, and the two move for different reasons.",
+		covers: [
+			"Aperiodic background",
+			"Peaks and band power",
+			"Fitting a spectrum",
+			"The exponent as a trace",
+		],
+		status: "ready",
+		accent: "--fam-oscillatory",
+		mark: <SpectrumMark />,
+	},
+	{
+		eyebrow: "Four",
 		title: "Measuring phenomenology",
 		blurb:
 			"How something felt is not directly observable, and asking about it changes it. What a self-report can and cannot carry, and how to build an instrument that respects the difference.",
@@ -70,13 +87,13 @@ const TOPICS: {
 		mark: <PhenomenologyMark />,
 	},
 	{
-		eyebrow: "Four",
+		eyebrow: "Five",
 		title: "Nature connectedness",
 		blurb:
 			"A research literature with its own instruments, its own disagreements, and a habit of measuring several different things under one name. What the construct claims, and where it is contested.",
 		covers: ["The main scales", "State versus trait", "Open questions"],
 		status: "planned",
-		accent: "--fam-oscillatory",
+		accent: "--fam-linear",
 		mark: <ConnectednessMark />,
 	},
 ];
@@ -87,12 +104,12 @@ export default function LearnIndexPage() {
 			<p className="font-sans text-xs uppercase tracking-[0.22em] text-muted">Section 2</p>
 			<h1 className="mt-3 font-serif text-4xl leading-tight md:text-5xl">Learn</h1>
 			<p className="mt-6 max-w-2xl font-serif text-xl leading-relaxed text-foreground/85">
-				Four ways into the ideas behind this project. Each is written to stand on its
+				Five ways into the ideas behind this project. Each is written to stand on its
 				own, and each is built around figures you can move rather than diagrams you
 				have to take on trust.
 			</p>
 			<p className="mt-4 max-w-2xl font-serif text-lg leading-relaxed text-foreground/85">
-				They are meant to be read in any order, though the first two share a
+				They are meant to be read in any order, though the first three share a
 				vocabulary: what you choose to measure, and how you compare two measurements.
 			</p>
 

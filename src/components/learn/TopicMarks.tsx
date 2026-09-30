@@ -131,3 +131,37 @@ export function ConnectednessMark() {
 		</Frame>
 	);
 }
+
+/** A spectrum: a falling background line, with one bump standing on it. */
+export function SpectrumMark() {
+	return (
+		<Frame>
+			{/* the aperiodic background, straight because the axes are logarithmic */}
+			<path
+				d="M5 16L51 44"
+				stroke={`var(${FAMILY_TOKEN.oscillatory})`}
+				strokeWidth="1.4"
+				strokeDasharray="4 3"
+				strokeLinecap="round"
+			/>
+			{/* the same line, with a peak riding on it */}
+			<path
+				d="M5 16L18 24c3-9 7-12 10-1l2 7 2 1 20 12"
+				stroke={`var(${FAMILY_TOKEN.information})`}
+				strokeWidth="1.6"
+				strokeLinecap="round"
+				strokeLinejoin="round"
+			/>
+			{/* the band a measurement would sum over, straddling the peak */}
+			<rect
+				x="20"
+				y="6"
+				width="12"
+				height="44"
+				fill="currentColor"
+				className="text-foreground"
+				opacity="0.07"
+			/>
+		</Frame>
+	);
+}
