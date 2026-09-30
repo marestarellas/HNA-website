@@ -601,7 +601,9 @@ export default function App() {
   // control rather than two that disagree.
   const pageMode = useTheme();
   const [clusterFilter, setClusterFilter] = useState(() => new Set()); // empty = show all
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  // Closed on arrival: the map is the point, and a panel of style swatches
+  // covering a third of it is not the first thing anyone came for.
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Apply the active palette as CSS custom properties on <body>. Everything
   // that uses T.x (which is a var(--atn-…) reference) updates instantly.
@@ -1503,7 +1505,10 @@ function ControlSidebar({
         {open ? "‹" : "›"}
       </button>
 
-      <div style={{
+      {/* `inert` rather than only pointer-events: the panel keeps its contents in
+          the DOM while collapsed so the width can animate, and without this a
+          keyboard user tabs through fifteen invisible controls. */}
+      <div inert={!open} style={{
         flex: 1, overflowY: "auto", overflowX: "hidden",
         padding: open ? "0 14px 14px" : 0,
         opacity: open ? 1 : 0,
