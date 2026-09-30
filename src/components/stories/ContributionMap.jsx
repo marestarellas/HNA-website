@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { Map as MaplibreMap, Marker, NavigationControl, Source, Layer } from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
+import { useTheme } from "@/components/useTheme";
 
 // Ported from the standalone Vite prototype. Only the two `import.meta.env`
 // reads changed (Vite → Next public env) plus a cleanup on the palette effect
@@ -595,7 +596,10 @@ export default function App() {
   const [viewMode, setViewMode] = useState("world"); // "world" | "constellation"
   const [colorBy, setColorBy] = useState("kind");    // "kind" | "continent" | "cluster"
   const [connectionMode, setConnectionMode] = useState("across"); // "across" | "within"
-  const [pageMode, setPageMode] = useState("light"); // "dark" | "light"
+  // Light and dark belong to the site, not to this page. The atlas paints its
+  // own palette but takes the choice from the header switch, so there is one
+  // control rather than two that disagree.
+  const pageMode = useTheme();
   const [clusterFilter, setClusterFilter] = useState(() => new Set()); // empty = show all
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
@@ -770,9 +774,7 @@ export default function App() {
   return (
     <div style={{ minHeight: "100vh", background: T.bg, color: T.ink, fontFamily: T.body, position: "relative" }}>
       <FontAndKeyframes />
-      <Header count={visibleStories.length} onShare={startContribute} onReset={reset}
-        pageMode={pageMode}
-        onTogglePage={() => setPageMode((m) => (m === "dark" ? "light" : "dark"))} />
+      <Header count={visibleStories.length} onShare={startContribute} onReset={reset} />
 
       <div style={{ padding: "0 14px 40px", maxWidth: "min(1600px, 98vw)", margin: "0 auto" }}>
         <div style={{ display: "flex", gap: 16, alignItems: "stretch", flexWrap: "wrap" }}>
@@ -890,8 +892,7 @@ function KindPicker({ onClose, onPick }) {
 }
 
 /* ----------------------------------------------------------- Header */
-function Header({ count, onShare, onReset, pageMode, onTogglePage }) {
-  const isLight = pageMode === "light";
+function Header({ count, onShare, onReset }) {
   return (
     <header style={{ padding: "26px 18px 14px", maxWidth: 1040, margin: "0 auto",
       display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
@@ -904,13 +905,6 @@ function Header({ count, onShare, onReset, pageMode, onTogglePage }) {
         </div>
       </div>
       <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-        {onTogglePage && (
-          <button onClick={onTogglePage}
-            title={isLight ? "Switch to dark mode" : "Switch to light mode"}
-            style={{ ...ghostBtn, padding: "8px 12px", fontSize: 16, lineHeight: 1 }}>
-            {isLight ? "☾" : "☀"}
-          </button>
-        )}
         <button onClick={onReset} style={ghostBtn}>reset</button>
         <button onClick={onShare} style={primaryBtn}>＋ Share your story</button>
       </div>
