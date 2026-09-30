@@ -14,6 +14,23 @@
 	"compatibility_date": "2025-12-01",
 	"compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
 
+	// Keep the workers.dev address alive. This is not cosmetic: adding a
+	// `routes` block makes Wrangler disable the workers.dev subdomain unless
+	// this is set, which takes the site offline at the only address anyone has.
+	// Learned the hard way. Once a custom domain is serving, this can be turned
+	// off deliberately, in its own deploy, having checked the domain first.
+	"workers_dev": true,
+
+	// The custom domain is not here yet. `attuningtonature.earth` was added to a
+	// different Cloudflare account from the one that owns this Worker, its D1
+	// and its buckets, and a Workers custom domain has to live in the same
+	// account as the Worker. Once the zone is in account 5fa5ad09…, restore:
+	//
+	//   "routes": [
+	//     { "pattern": "attuningtonature.earth", "custom_domain": true },
+	//     { "pattern": "www.attuningtonature.earth", "custom_domain": true }
+	//   ],
+
 	"assets": {
 		"directory": ".open-next/assets",
 		"binding": "ASSETS"
