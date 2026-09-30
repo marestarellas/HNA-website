@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { Figure, Slider, Readout, SERIES_COLOR } from "./_ui";
+import { useMemo, useState, useDeferredValue, useRef } from "react";
+import { useInView } from "./_useInView";
+import { Figure, Slider, Readout, SERIES_COLOR, FigureSkeleton } from "./_ui";
 import { FieldCanvas } from "./_FieldCanvas";
 import { coloredNoise, toPath, px } from "./_signals";
 import { synthesizeImage, radialPSD, tracePSD } from "./_fields";
@@ -24,12 +25,28 @@ const W = 300;
 const H = 150;
 
 export function SpatialFrequency() {
-	const [beta, setBeta] = useState(2);
+	const hostRef = useRef<HTMLDivElement>(null);
+	const ready = useInView(hostRef, { once: true });
+	return (
+		<div ref={hostRef} style={ready ? undefined : { minHeight: 560 }}>
+			{ready ? <SpatialFrequencyBody /> : <FigureSkeleton label="Scale-free structure in an image and in a sound" height={440} />}
+		</div>
+	);
+}
 
-	const image = useMemo(() => synthesizeImage(N, beta, 11), [beta]);
+function SpatialFrequencyBody() {
+	const [beta, setBeta] = useState(2);
+	// The heavy work below runs from deferred copies of the controls. Dragging a
+	// slider fires an event per frame, and each one used to run the whole chain
+	// before the browser was allowed to paint. This keeps the handle and the
+	// readout urgent and lets the recompute run at low priority, where a newer
+	// drag position can interrupt a stale one.
+	const dBeta = useDeferredValue(beta);
+
+	const image = useMemo(() => synthesizeImage(N, dBeta, 11), [dBeta]);
 	const psd2d = useMemo(() => radialPSD(image, N), [image]);
 
-	const sound = useMemo(() => coloredNoise(AUDIO_N, beta, 23), [beta]);
+	const sound = useMemo(() => coloredNoise(AUDIO_N, dBeta, 23), [dBeta]);
 	const psd1d = useMemo(() => tracePSD(sound, AUDIO_FS, 0.2, 120), [sound]);
 
 	// Log-log path for the 2-D radial spectrum.

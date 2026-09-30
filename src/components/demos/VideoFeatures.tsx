@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useInView } from "./_useInView";
 import { Figure, Readout, SERIES_COLOR } from "./_ui";
 
 /**
@@ -62,6 +63,8 @@ const VIEW_NOTE: Record<View, string> = {
 };
 
 export function VideoFeatures() {
+	const hostRef = useRef<HTMLDivElement>(null);
+	const onScreen = useInView(hostRef);
 	const videoRef = useRef<HTMLVideoElement>(null);
 	const sampleRef = useRef<HTMLCanvasElement>(null);
 	const viewRef = useRef<HTMLCanvasElement>(null);
@@ -279,9 +282,9 @@ export function VideoFeatures() {
 			raf = requestAnimationFrame(step);
 		};
 
-		raf = requestAnimationFrame(step);
+		if (onScreen) raf = requestAnimationFrame(step);
 		return () => cancelAnimationFrame(raf);
-	}, [resetKey]);
+	}, [resetKey, onScreen]);
 
 	// Drive the label from the element's own events rather than from what we just
 	// asked it to do. `play()` returns a promise that can reject (autoplay
@@ -302,6 +305,14 @@ export function VideoFeatures() {
 		};
 	}, [resetKey]);
 
+	// Scrolling away pauses the clip. Leaving it running behind the reader costs
+	// a video decode and a full frame of pixel reads per frame, for nobody.
+	useEffect(() => {
+		const v = videoRef.current;
+		if (!v || onScreen || v.paused) return;
+		v.pause();
+	}, [onScreen]);
+
 	const [blocked, setBlocked] = useState(false);
 
 	const toggle = () => {
@@ -318,6 +329,7 @@ export function VideoFeatures() {
 	const active = CLIPS.find((c) => c.id === clip)!;
 
 	return (
+		<div ref={hostRef}>
 		<Figure
 			label="Wave clips, measured as they play"
 			controls={
@@ -468,5 +480,6 @@ export function VideoFeatures() {
 
 			<canvas ref={sampleRef} className="hidden" aria-hidden />
 		</Figure>
+		</div>
 	);
 }

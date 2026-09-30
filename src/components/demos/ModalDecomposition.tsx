@@ -1,7 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { Figure, Slider, Readout, SERIES_COLOR } from "./_ui";
+import { useMemo, useState, useRef } from "react";
+import { useInView } from "./_useInView";
+import { useSettled } from "./_useSettled";
+import { Figure, Slider, Readout, SERIES_COLOR, FigureSkeleton } from "./_ui";
 import { FieldCanvas } from "./_FieldCanvas";
 import { toPath } from "./_signals";
 import { waveField, podModes, tracePSD } from "./_fields";
@@ -26,10 +28,25 @@ const W = 260;
 const H = 64;
 
 export function ModalDecomposition() {
+	const hostRef = useRef<HTMLDivElement>(null);
+	const ready = useInView(hostRef, { once: true });
+	return (
+		<div ref={hostRef} style={ready ? undefined : { minHeight: 620 }}>
+			{ready ? <ModalDecompositionBody /> : <FigureSkeleton label="Modal decomposition · a scene as a few oscillating patterns" height={500} />}
+		</div>
+	);
+}
+
+function ModalDecompositionBody() {
 	const [swell, setSwell] = useState(0.3);
 	const [chop, setChop] = useState(0.45);
+	// The heavy work below waits for the sliders to stop moving. Deferring it
+	// was not enough here: the chain is one uninterruptible call, so every
+	// committed render paid for it in full. See _useSettled.ts.
+	const dSwell = useSettled(swell, 200);
+	const dChop = useSettled(chop, 200);
 
-	const wf = useMemo(() => waveField(N, T, FPS, swell, chop), [swell, chop]);
+	const wf = useMemo(() => waveField(N, T, FPS, dSwell, dChop), [dSwell, dChop]);
 	const pod = useMemo(() => podModes(wf.frames, K), [wf]);
 
 	const peaks = useMemo(

@@ -169,3 +169,36 @@ export function Baseline({ width, y }: { width: number; y: number }) {
 		/>
 	);
 }
+
+/**
+ * A figure that has not been reached yet.
+ *
+ * Several figures on the oscillations page do real work before they can draw
+ * anything: a wave field, a decomposition, a spectrum. Doing all of that on
+ * load, for figures a reader has not scrolled to, is most of what made that
+ * page slow to arrive on. They mount as their reader approaches instead, and
+ * this stands in until then.
+ *
+ * It reserves height so nothing below it jumps when the real figure arrives.
+ * In practice the swap happens a few hundred pixels before the figure is on
+ * screen, so it is rarely seen at all.
+ */
+export function FigureSkeleton({ label, height = 460 }: { label: string; height?: number }) {
+	return (
+		<figure className="my-10">
+			<div className="rounded-sm border border-rule bg-background p-4 sm:p-5">
+				<p className="mb-3 font-sans text-[10px] uppercase tracking-[0.22em] text-muted">
+					{label}
+				</p>
+				<div
+					className="flex items-center justify-center rounded-sm"
+					style={{ height, background: "color-mix(in oklab, currentColor 3%, transparent)" }}
+				>
+					<span className="font-sans text-[10px] uppercase tracking-[0.2em] text-muted">
+						computing on approach
+					</span>
+				</div>
+			</div>
+		</figure>
+	);
+}

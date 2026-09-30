@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { Figure, Legend, Slider, Readout, Baseline, SERIES_COLOR } from "./_ui";
+import { useMemo, useState, useDeferredValue, useRef } from "react";
+import { useInView } from "./_useInView";
+import { Figure, Legend, Slider, Readout, Baseline, SERIES_COLOR, FigureSkeleton } from "./_ui";
 import { FieldCanvas } from "./_FieldCanvas";
 import { toPath, px } from "./_signals";
 import {
@@ -96,10 +97,26 @@ const COPY: Record<Mode, { tier: string; note: React.ReactNode }> = {
 };
 
 export function SpatialReduction() {
+	const hostRef = useRef<HTMLDivElement>(null);
+	const ready = useInView(hostRef, { once: true });
+	return (
+		<div ref={hostRef} style={ready ? undefined : { minHeight: 640 }}>
+			{ready ? <SpatialReductionBody /> : <FigureSkeleton label="Four ways to turn a moving scene into one number" height={520} />}
+		</div>
+	);
+}
+
+function SpatialReductionBody() {
 	const [mode, setMode] = useState<Mode>("whole");
 	const [swell, setSwell] = useState(0.3);
+	// The heavy work below runs from deferred copies of the controls. Dragging a
+	// slider fires an event per frame, and each one used to run the whole chain
+	// before the browser was allowed to paint. This keeps the handle and the
+	// readout urgent and lets the recompute run at low priority, where a newer
+	// drag position can interrupt a stale one.
+	const dSwell = useDeferredValue(swell);
 
-	const wf = useMemo(() => waveField(N, T, FPS, swell, 0.4), [swell]);
+	const wf = useMemo(() => waveField(N, T, FPS, dSwell, 0.4), [dSwell]);
 
 	const trace = useMemo(() => {
 		if (mode === "diff") return frameDifferenceTrace(wf.frames);

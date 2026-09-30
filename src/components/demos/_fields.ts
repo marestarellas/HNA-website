@@ -339,19 +339,35 @@ export function podModes(
 
 	for (let m = 0; m < k; m++) {
 		// Power iteration for the leading eigenvector of the deflated C.
+		//
+		// It stops when the vector stops moving rather than after a fixed count.
+		// A fixed 220 iterations was roughly ten times what these matrices
+		// actually need, and this runs again on every drag of a slider, so the
+		// waste was being paid in dropped frames.
 		let v = Array.from({ length: T }, () => gaussian(rand));
 		let lambda = 0;
 		for (let iter = 0; iter < 220; iter++) {
 			const w = new Array<number>(T).fill(0);
 			for (let i = 0; i < T; i++) {
+				const row = C[i];
 				let s = 0;
-				for (let j = 0; j < T; j++) s += C[i][j] * v[j];
+				for (let j = 0; j < T; j++) s += row[j] * v[j];
 				w[i] = s;
 			}
-			const norm = Math.hypot(...w) || 1;
-			for (let i = 0; i < T; i++) w[i] = w[i] / norm;
+			// Not Math.hypot: spreading T arguments into it, thousands of times,
+			// costs more than the arithmetic it performs.
+			let sq = 0;
+			for (let i = 0; i < T; i++) sq += w[i] * w[i];
+			const norm = Math.sqrt(sq) || 1;
+			let drift = 0;
+			for (let i = 0; i < T; i++) {
+				w[i] = w[i] / norm;
+				const d = w[i] - v[i];
+				drift += d * d;
+			}
 			lambda = norm;
 			v = w;
+			if (drift < 1e-14) break;
 		}
 
 		// Spatial mode = sum_t v_t * X_t, normalised.

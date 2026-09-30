@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useInView } from "./_useInView";
 import { Figure, Readout } from "./_ui";
 import { SHOWCASE_CLIPS } from "./_showcase";
 
@@ -68,11 +69,14 @@ function ModeSurface({
 	freqHz,
 	accent,
 	label,
+	active,
 }: {
 	src: string;
 	freqHz: number;
 	accent: string;
 	label: string;
+	/** False while the gallery is off screen: draw once, then stop. */
+	active: boolean;
 }) {
 	const field = useHeightField(src);
 	const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -154,7 +158,10 @@ function ModeSurface({
 		// in that case. It also removes a blank first frame in the normal case.
 		draw(1);
 
-		if (reduced) return;
+		// A still surface is a perfectly good picture of a mode. There is no
+		// reason to keep four of them animating for a reader who is somewhere
+		// else on the page.
+		if (reduced || !active) return;
 
 		const tick = (now: number) => {
 			const t = (now - start) / 1000;
@@ -166,7 +173,7 @@ function ModeSurface({
 		};
 		raf = requestAnimationFrame(tick);
 		return () => cancelAnimationFrame(raf);
-	}, [field, freqHz, accent]);
+	}, [field, freqHz, accent, active]);
 
 	return (
 		<canvas
@@ -184,8 +191,11 @@ const ACCENTS = ["--fam-linear", "--fam-oscillatory", "--fam-information", "--fa
 export function ModeGallery() {
 	const [clipIndex, setClipIndex] = useState(2);
 	const clip = CLIPS[clipIndex];
+	const hostRef = useRef<HTMLDivElement>(null);
+	const active = useInView(hostRef);
 
 	return (
+		<div ref={hostRef}>
 		<Figure
 			label="Spatial modes, breathing at their own frequencies"
 			controls={
@@ -246,6 +256,7 @@ export function ModeGallery() {
 								freqHz={Math.max(0.08, Math.min(1.6, freq))}
 								accent={ACCENTS[i % 4]}
 								label={`Spatial mode ${i + 1} of ${clip.label}, oscillating at ${freq.toFixed(2)} hertz.`}
+								active={active}
 							/>
 						</div>
 					);
@@ -261,6 +272,7 @@ export function ModeGallery() {
 					]}
 				/>
 			</div>
-		</Figure>
+			</Figure>
+		</div>
 	);
 }
