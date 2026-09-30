@@ -12,7 +12,7 @@ export function DesignNav({ current }: DesignNavProps) {
 	return (
 		<nav
 			aria-label="Design directions"
-			className="fixed right-3 top-3 z-50 flex items-center gap-1 rounded-full border border-black/15 bg-white/85 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-black backdrop-blur-md shadow-sm"
+			className="fixed right-3 top-3 z-50 flex max-w-[calc(100vw-1.5rem)] flex-wrap items-center justify-end gap-1 rounded-2xl border border-black/15 bg-white/85 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-black backdrop-blur-md shadow-sm"
 			style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" }}
 		>
 			<Link href="/design" className="opacity-60 transition-opacity hover:opacity-100">

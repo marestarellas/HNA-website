@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { DESIGNS } from "./_content";
 
-// Index page for the five design directions. Lists each with its rationale
+// Index page for the design directions. Lists each with its rationale
 // and links into the full-page mock. Use this page to compare; click into a
 // direction to see it inhabited.
 
@@ -17,7 +17,7 @@ export default function DesignIndexPage() {
 				</h1>
 				<p className="mt-6 max-w-2xl font-sans text-base leading-relaxed text-foreground/85">
 					Each direction below is a distinct visual treatment of the
-					landing page — not a colorway of one design but a different
+					landing page, not a colorway of one design but a different
 					premise about what kind of object this site is. Click in to
 					inhabit one. The chrome at the top of each mock lets you
 					flip between them.
@@ -25,7 +25,9 @@ export default function DesignIndexPage() {
 				<p className="mt-3 max-w-2xl font-sans text-sm leading-relaxed text-muted">
 					Same content in every mock so you compare presentation, not
 					words. Imagery, where used, is currently placeholder color
-					blocks since no photo bank exists yet.
+					blocks since no photo bank exists yet. All but the last carry
+					live motion, so they are worth opening rather than judging
+					from here.
 				</p>
 			</header>
 
@@ -58,7 +60,7 @@ export default function DesignIndexPage() {
 			</section>
 
 			<footer className="mt-16 border-t border-rule pt-6 font-sans text-xs uppercase tracking-[0.22em] text-muted">
-				Pick one, several, or none — happy to combine, mutate, or scrap
+				Pick one, several, or none. Happy to combine, mutate, or scrap
 				any of these.
 			</footer>
 		</main>

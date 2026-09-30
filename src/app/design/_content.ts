@@ -29,7 +29,7 @@ export const SECTIONS: SectionEntry[] = [
 		number: "III",
 		title: "Stories of the land",
 		blurb:
-			"A world map of personal stories and inherited folklore — slowly inhabited by visitors, one pin at a time.",
+			"A world map of personal stories and inherited folklore, slowly inhabited by visitors, one pin at a time.",
 	},
 	{
 		href: "/experiment",
@@ -57,71 +57,43 @@ export type DesignMeta = {
 
 export const DESIGNS: DesignMeta[] = [
 	{
-		slug: "editorial",
+		slug: "lichen",
 		number: "01",
-		name: "Editorial Magazine",
-		tagline: "the magazine cover for a science of nature",
+		name: "Lichen / Patina",
+		tagline: "the close-up surface of slow time",
 		rationale:
-			"Photography-led, large display serif overlaid on imagery, the four sections shown as magazine covers in a grid. Closest to the Atmos / The Overview references — editorial confidence, willing to be intimate and strange.",
+			"Heavy grain everywhere: rust patina, lichen on stone, fired clay. Tiny radial pulses bloom and fade across the page like microscopic spores opening. Muted greens, rust, oxidized cream. The most textural and most intimate-scale of the set.",
+	},
+	{
+		slug: "descent",
+		number: "02",
+		name: "Descent",
+		tagline: "scroll is depth, not distance",
+		rationale:
+			"The page is a water column read from the surface down. Light drains out of the background along a curve, fine particles drift upward past you because you are the one descending, and a gauge in the margin counts metres. The wave clip appears once, at the top, seen from underneath and out of focus, so water is felt at the boundary rather than shown as scenery.",
+	},
+	{
+		slug: "confluence",
+		number: "03",
+		name: "Confluence",
+		tagline: "four streams gathering into one channel",
+		rationale:
+			"The navigation is the picture. Each entrance is a rivulet from the top edge, thin at the source and heavier downhill, meandering across wet sand until all four converge and leave as a single channel. Hovering swells one stream and thins the others; clicking sends a pulse down it. Four ways in, one question they drain toward.",
 	},
 	{
 		slug: "immersive",
-		number: "02",
+		number: "04",
 		name: "Immersive Cinematic",
 		tagline: "scene by scene, you walk through it",
 		rationale:
 			"Each section is a full-bleed photographic scene that fills the viewport. You scroll, the next scene cinematically dissolves in over the previous one. Type appears centered and oversized. Custom small cursor. The whole page becomes a sequence you walk through.",
 	},
-
-	// — Earthy / abstract / wavy — share a typographic family with the Poem
-	//   register and lean into texture and flow over photography ———————————
-
 	{
-		slug: "waves",
-		number: "03",
-		name: "Veil of Waves",
-		tagline: "translucent silks of color, drifting",
-		rationale:
-			"Many translucent SVG wave layers in earth tones drift over each other like silk fabrics caught in slow current. Massive italic serif sits over them. The whole page reads as a single continuous slow surface. The most literal interpretation of 'flowy'.",
-	},
-	{
-		slug: "strata",
-		number: "04",
-		name: "Strata",
-		tagline: "the long compression of time, in bands",
-		rationale:
-			"Horizontal sediment bands stacked vertically — each a different earth color, each with a hand-eroded wavy edge that drifts slowly. Heavy grain texture overlay. Scroll subtly compresses the strata. Reads as deep time made visible. The earthiest of the set.",
-	},
-	{
-		slug: "tide",
+		slug: "editorial",
 		number: "05",
-		name: "Tide / Ink",
-		tagline: "warm pigment dispersing in still water",
+		name: "Editorial Magazine",
+		tagline: "the magazine cover for a science of nature",
 		rationale:
-			"Organic ink-like blobs in burnt sienna and deep ochre slowly morph between forms, as if pigment were dispersing in water and resettling. SVG turbulence on the edges so the bleed is wet, not hard. Type sits over the dispersion. Painterly, abstract, alive.",
-	},
-	{
-		slug: "lichen",
-		number: "06",
-		name: "Lichen / Patina",
-		tagline: "the close-up surface of slow time",
-		rationale:
-			"Heavy grain everywhere — like rust patina, lichen on stone, fired clay. Tiny radial pulses bloom and fade across the page like microscopic spores opening. Muted greens, rust, oxidized cream. The most textural and most intimate-scale of the set.",
-	},
-	{
-		slug: "dune",
-		number: "07",
-		name: "Dune",
-		tagline: "long horizontal flow under low sun",
-		rationale:
-			"Long undulating curves like wind-drifted sand under raking light, simplified to abstract horizontal flow. Re-paletted to dusk: warm cream sky, atmospheric blue ridges, terracotta and forest mid-bands, near-black foreground. The most spacious and atmospheric of the set.",
-	},
-	{
-		slug: "refract",
-		number: "08",
-		name: "Refract",
-		tagline: "moving lenses reveal what is underneath",
-		rationale:
-			"Underwater register. Deep teal field with caustic light continuously rippling across the whole viewport. Each section image holds a cursor-following lens — move it over the photo and the surface is cut away to reveal a 'hidden' version: chromatic-shifted, with a faint EEG signal trace and frequency labels underneath. The optics are real (chromatic-aberration ring on the lens edge). Ties the dream-of-nature visual directly to the project's premise — that the science is what is underneath the experience of nature.",
+			"Photography-led, large display serif overlaid on imagery, the four sections shown as magazine covers in a grid. Closest to the Atmos and The Overview references: editorial confidence, willing to be intimate and strange.",
 	},
 ];
