@@ -186,6 +186,55 @@ function ModeSurface({
 	);
 }
 
+
+/**
+ * The clip the modes were taken from.
+ *
+ * Eight seconds at 24 frames per second, which is exactly the window the
+ * decomposition ran on, so what plays here is what was measured rather than a
+ * different part of the same recording. The masters are 16 to 131 Mbps and up
+ * to 308 MB; these are 640 pixels wide and about a megabyte.
+ *
+ * `preload="none"` matters: four clips sit behind the selector and a reader who
+ * never reaches this figure should not pay for any of them. Playback follows
+ * the same in-view flag as the mode surfaces, so the sea stops moving when the
+ * figure is off screen.
+ */
+function ClipFilm({ name, label, active }: { name: string; label: string; active: boolean }) {
+	const videoRef = useRef<HTMLVideoElement>(null);
+
+	useEffect(() => {
+		const v = videoRef.current;
+		if (!v) return;
+		if (active) {
+			v.play().catch(() => {
+				// Autoplay refused. It is muted so this is rare, and a still frame
+				// from the clip is already showing underneath.
+			});
+		} else if (!v.paused) {
+			v.pause();
+		}
+	}, [active, name]);
+
+	return (
+		<div className="overflow-hidden rounded-sm border border-rule" style={{ background: "var(--background)" }}>
+			<video
+				ref={videoRef}
+				key={name}
+				src={`/learn/clips/${name}.mp4`}
+				poster={`/learn/clips/${name}.jpg`}
+				muted
+				loop
+				playsInline
+				preload="none"
+				aria-label={`The sea in ${label}, the eight seconds the modes below were computed from.`}
+				className="block w-full"
+				style={{ aspectRatio: "16 / 9", objectFit: "cover" }}
+			/>
+		</div>
+	);
+}
+
 const ACCENTS = ["--fam-linear", "--fam-oscillatory", "--fam-information", "--fam-complexity"];
 
 export function ModeGallery() {
@@ -225,15 +274,23 @@ export function ModeGallery() {
 			}
 			caption={
 				<>
-					Each surface is a mode image from the analysis pipeline: a greyscale array
-					whose value at every point is that point&rsquo;s weight in the mode, drawn here
-					as a relief and oscillating at the frequency the decomposition found for it.
-					Compare clips. An ordered sea gives smooth low-frequency modes with long
-					crests; a broken one gives busier modes at higher frequencies. The
-					percentages say how much of the clip each mode accounts for.
+					At the top is the footage itself, the same eight seconds the decomposition
+					ran on. Below it, each surface is a mode image from that pipeline: a greyscale
+					array whose value at every point is that point&rsquo;s weight in the mode,
+					drawn here as a relief and oscillating at the frequency found for it. Compare
+					clips, and compare the sea against what it was reduced to. An ordered sea
+					gives smooth low-frequency modes with long crests; a broken one gives busier
+					modes at higher frequencies. The percentages say how much of the clip each
+					mode accounts for.
 				</>
 			}
 		>
+			<ClipFilm name={clip.name} label={clip.label} active={active} />
+
+			<p className="mt-4 mb-2 font-sans text-[10px] uppercase tracking-[0.16em] text-muted">
+				and the modes it decomposes into
+			</p>
+
 			<div className="grid gap-4 sm:grid-cols-2">
 				{Array.from({ length: clip.modeCount }, (_, i) => {
 					const freq = clip.modalFreqsHz[i] ?? 0;
