@@ -21,15 +21,23 @@
 	// off deliberately, in its own deploy, having checked the domain first.
 	"workers_dev": true,
 
-	// The custom domain is not here yet. `attuningtonature.earth` was added to a
-	// different Cloudflare account from the one that owns this Worker, its D1
-	// and its buckets, and a Workers custom domain has to live in the same
-	// account as the Worker. Once the zone is in account 5fa5ad09…, restore:
+	// The public address. `custom_domain` hands Cloudflare both the DNS record
+	// and the certificate for these names: it creates the proxied records in the
+	// zone on deploy and renews the TLS itself, so there is nothing to keep in
+	// step by hand.
 	//
-	//   "routes": [
-	//     { "pattern": "attuningtonature.earth", "custom_domain": true },
-	//     { "pattern": "www.attuningtonature.earth", "custom_domain": true }
-	//   ],
+	// The zone has to be active in the same account as this Worker. It was first
+	// added to a different one, which fails as "Can't infer zone from route"
+	// (error 10082) rather than saying so; the check that catches it is whether
+	// the zone appears under account 5fa5ad09… at all.
+	//
+	// Both names serve the site rather than one redirecting to the other. If a
+	// canonical host is wanted later, that redirect belongs in a Cloudflare rule;
+	// dropping the www route here would just leave the name dead.
+	"routes": [
+		{ "pattern": "attuningtonature.earth", "custom_domain": true },
+		{ "pattern": "www.attuningtonature.earth", "custom_domain": true }
+	],
 
 	"assets": {
 		"directory": ".open-next/assets",
