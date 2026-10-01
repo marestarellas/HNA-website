@@ -197,13 +197,13 @@ export default function InspirationPage() {
 						<Plate src="/inspiration/image3.jpg" alt="A photographed page: the Walcott and Brathwaite epigraphs." note="Where this page opens" index={3} />
 						<Plate
 							src="/inspiration/ocean-mirror.jpg"
-							alt="A photographed page. It reads: There&rsquo;s a reason we are drawn to gazing at the ocean. It is said the ocean provides a closer reflection of who we are than any mirror."
-							note="Why we look at all"
+							alt="A photographed page from Rick Rubin&rsquo;s The Creative Act. It reads: There&rsquo;s a reason we are drawn to gazing at the ocean. It is said the ocean provides a closer reflection of who we are than any mirror."
+							note="Rubin, The Creative Act"
 							index={4}
 						/>
 					</div>
 
-					<Quote>
+					<Quote attribution="Rick Rubin, The Creative Act: A Way of Being, 2023">
 						There&rsquo;s a reason we are drawn to gazing at the ocean. It is said the
 						ocean provides a closer reflection of who we are than any mirror.
 					</Quote>
