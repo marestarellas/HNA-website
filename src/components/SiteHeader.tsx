@@ -1,12 +1,14 @@
 import Link from "next/link";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
+// Same order as the four entrances on the landing page, with Experiment last
+// because it is the one section that is not built yet.
 const NAV = [
 	{ href: "/learn", label: "Learn" },
-	{ href: "/stories", label: "Stories" },
-	{ href: "/experiment", label: "Experiment" },
 	{ href: "/science", label: "Science" },
+	{ href: "/stories", label: "Stories" },
 	{ href: "/inspiration", label: "Inspiration" },
+	{ href: "/experiment", label: "Experiment" },
 ];
 
 export function SiteHeader() {

@@ -17,20 +17,20 @@ import Link from "next/link";
 
 const SECTIONS = [
 	{
-		href: "/science",
-		numeral: "I",
-		title: "Science",
-		blurb:
-			"The empirical study behind the project: methods, figures, what we are finding. Honest about being in progress.",
-		accent: "--fam-linear",
-	},
-	{
 		href: "/learn",
-		numeral: "II",
+		numeral: "I",
 		title: "Learn",
 		blurb:
 			"What entrainment is. What it means for a brain to lock onto a wave, a forest, a breath. Short animations and live demos for each concept.",
 		accent: "--fam-oscillatory",
+	},
+	{
+		href: "/science",
+		numeral: "II",
+		title: "Science",
+		blurb:
+			"The empirical study behind the project: methods, figures, what we are finding. Honest about being in progress.",
+		accent: "--fam-linear",
 	},
 	{
 		href: "/stories",
@@ -41,11 +41,11 @@ const SECTIONS = [
 		accent: "--fam-information",
 	},
 	{
-		href: "/experiment",
+		href: "/inspiration",
 		numeral: "IV",
-		title: "Experiment",
+		title: "Inspiration",
 		blurb:
-			"A short sequence of generated nature stimuli, with a brief phenomenological self-report after each. A research instrument disguised as an experience.",
+			"The notebook the project came out of: trails of images, poetry and narrative fragments that shaped how it looks and what it is reaching for.",
 		accent: "--fam-complexity",
 	},
 ];
