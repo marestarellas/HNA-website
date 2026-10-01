@@ -195,7 +195,18 @@ export default function InspirationPage() {
 				>
 					<div className="grid gap-6 sm:grid-cols-2">
 						<Plate src="/inspiration/image3.jpg" alt="A photographed page: the Walcott and Brathwaite epigraphs." note="Where this page opens" index={3} />
+						<Plate
+							src="/inspiration/ocean-mirror.jpg"
+							alt="A photographed page. It reads: There&rsquo;s a reason we are drawn to gazing at the ocean. It is said the ocean provides a closer reflection of who we are than any mirror."
+							note="Why we look at all"
+							index={4}
+						/>
 					</div>
+
+					<Quote>
+						There&rsquo;s a reason we are drawn to gazing at the ocean. It is said the
+						ocean provides a closer reflection of who we are than any mirror.
+					</Quote>
 				</Trail>
 			</div>
 
